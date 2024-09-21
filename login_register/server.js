@@ -22,11 +22,20 @@ app.use(bodyParser.json());
 // 假设这是你的用户数据库
 const users = [
     { id: 1, username: 'huangjiaxi666', password: 'scnu' },
-    { id: 2, username: 'user2', password: 'password2' }
+    { id: 2, username: 'your_username', password: 'your_password' }
 ];
+
+// 处理 OPTIONS 请求
+app.options('/api/login', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(200);
+});
 
 // 登录路由
 app.post('/api/login', (req, res) => {
+    console.log('Received POST request for /api/login');
     const { username, password } = req.body;
 
     // 查找用户

@@ -33,6 +33,29 @@
             </form>
             <p class="text-center mt-3">没有账户？<span class="text-primary" onclick="register()">注册</span></p>
         </div>
+
+        <!-- 注册表单 -->
+        <div class="form-container" id="register-form" style="display:none;">
+            <h2 class="login-title">用户注册</h2>
+            <form>
+                <div class="mb-3">
+                    <input type="text" id="register-username" class="form-control" placeholder="用户名" aria-label="用户名" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" id="register-password" class="form-control" placeholder="密码" aria-label="密码" required>
+                </div>
+                <button type="button" class="btn btn-primary w-100" onclick="registerUser()">注册</button>
+            </form>
+            <p class="text-center mt-3">已有账户？<span class="text-primary" onclick="toggleForm()">登录</span></p>
+        </div>
+
+        <div id="data-container" style="display:none;">
+            <h2>上传数据</h2>
+            <input type="text" id="data-input" placeholder="输入数据">
+            <button onclick="uploadData()">上传</button>
+            <h2>数据列表</h2>
+            <div id="data-list"></div>
+        </div>
     </div>
 </div>
 
