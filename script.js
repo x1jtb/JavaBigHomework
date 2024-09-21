@@ -1,3 +1,9 @@
+// 通用的错误提示函数
+function showError(message) {
+    alert(message);
+}
+
+// 登录函数
 async function login() {
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
@@ -11,20 +17,37 @@ async function login() {
             body: JSON.stringify({ username, password })
         });
 
-        if (1) {
+        if (response.ok) {
             document.getElementById('login-form').style.display = 'none';
             document.getElementById('data-container').style.display = 'block';
         } else {
-            alert('登录失败：用户名或密码错误');
+            showError('登录失败：用户名或密码错误');
         }
     } catch (error) {
-        alert('登录失败，请检查网络连接');
+        showError('登录失败，请检查网络连接');
     }
 }
 
+// 注册函数
 async function register() {
     const username = document.getElementById('register-username').value;
     const password = document.getElementById('register-password').value;
+
+    function toggleForm() {
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+
+        // 如果登录表单当前显示，隐藏它并显示注册表单
+        if (loginForm.style.display === 'none') {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+        } else {
+            // 如果登录表单未显示，则显示它并隐藏注册表单
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+        }
+    }
+
 
     try {
         const response = await fetch('/api/register', {
@@ -39,13 +62,14 @@ async function register() {
             alert('注册成功，请登录');
             toggleForm();
         } else {
-            alert('注册失败，请检查输入');
+            showError('注册失败，请检查输入');
         }
     } catch (error) {
-        alert('注册失败，请检查网络连接');
+        showError('注册失败，请检查网络连接');
     }
 }
 
+// 上传数据函数
 async function uploadData() {
     const data = document.getElementById('data-input').value;
 
@@ -58,21 +82,22 @@ async function uploadData() {
             body: JSON.stringify({ data })
         });
 
-        if (1) {
+        if (response.ok) {
             alert('数据上传成功');
             queryData(); // 上传成功后自动刷新数据列表
         } else {
-            alert('数据上传失败');
+            showError('数据上传失败');
         }
     } catch (error) {
-        alert('数据上传失败，请检查网络连接');
+        showError('数据上传失败，请检查网络连接');
     }
 }
 
+// 查询数据函数
 async function queryData() {
     try {
         const response = await fetch('/api/data');
-        if (1) {
+        if (response.ok) {
             const data = await response.json();
             const dataList = document.getElementById('data-list');
             dataList.innerHTML = ''; // 清空旧数据
@@ -88,13 +113,14 @@ async function queryData() {
                 dataList.appendChild(div);
             });
         } else {
-            alert('数据查询失败');
+            showError('数据查询失败');
         }
     } catch (error) {
-        alert('数据查询失败，请检查网络连接');
+        showError('数据查询失败，请检查网络连接');
     }
 }
 
+// 删除数据函数
 async function deleteData(index) {
     try {
         const response = await fetch(`/api/data/${index}`, {
@@ -105,13 +131,14 @@ async function deleteData(index) {
             alert('数据删除成功');
             queryData(); // 删除后自动刷新数据列表
         } else {
-            alert('数据删除失败');
+            showError('数据删除失败');
         }
     } catch (error) {
-        alert('数据删除失败，请检查网络连接');
+        showError('数据删除失败，请检查网络连接');
     }
 }
 
+// 修改数据函数
 async function editData(index) {
     const newData = prompt('请输入修改后的数据：');
     if (newData) {
@@ -128,10 +155,10 @@ async function editData(index) {
                 alert('数据修改成功');
                 queryData(); // 修改后自动刷新数据列表
             } else {
-                alert('数据修改失败');
+                showError('数据修改失败');
             }
         } catch (error) {
-            alert('数据修改失败，请检查网络连接');
+            showError('数据修改失败，请检查网络连接');
         }
     }
 }
