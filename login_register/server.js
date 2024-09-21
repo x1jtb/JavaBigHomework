@@ -10,7 +10,11 @@ const app = express();
 const PORT = process.env.PORT || 5500;
 
 const cors = require('cors');
-app.use(cors());  // 允许跨域请求
+app.use(cors({
+    origin: '*',  // 允许所有来源
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // 允许的方法
+    allowedHeaders: ['Content-Type', 'Authorization']  // 允许的请求头
+}));
 
 // 使用 bodyParser 解析 JSON 数据
 app.use(bodyParser.json());
