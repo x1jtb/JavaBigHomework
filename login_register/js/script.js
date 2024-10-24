@@ -18,23 +18,25 @@ async function login() {
         localStorage.setItem('token', data.token); // 存储 token
         document.getElementById('login-form').style.display = 'none';
         document.getElementById('data-container').style.display = 'block';
-        queryData(); // 登录后查询数据
     } else {
         alert('登录失败：用户名或密码错误');
     }
 }
 
-// 切换登录/注册表单
-function toggleForm() {
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
+// 在后续请求中使用 token
+async function fetchProtectedData() {
+    const token = localStorage.getItem('token');
 
-    if (loginForm.style.display === 'none') {
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
+    const response = await fetch('/api/protected', {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        console.log(data);
     } else {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
+        alert('未授权访问');
     }
 }
 
@@ -63,6 +65,20 @@ async function register() {
     }
 }
 
+// 切换表单的显示
+function toggleForm() {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+
+    if (loginForm.style.display === 'none') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+    } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+    }
+}
+
 // 上传数据函数
 async function uploadData() {
     const data = document.getElementById('data-input').value;
@@ -71,7 +87,6 @@ async function uploadData() {
         const response = await fetch('/api/data', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ data })
@@ -91,13 +106,7 @@ async function uploadData() {
 // 查询数据函数
 async function queryData() {
     try {
-        const response = await fetch('/api/data', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-
+        const response = await fetch('/api/data');
         if (response.ok) {
             const data = await response.json();
             const dataList = document.getElementById('data-list');
@@ -108,62 +117,13 @@ async function queryData() {
                 div.classList.add('data-item');
                 div.innerHTML = `
                     <span>${item}</span>
-                    <button onclick="editData(${index})">修改</button>
-                    <button onclick="deleteData(${index})">删除</button>
                 `;
                 dataList.appendChild(div);
             });
         } else {
-            showError('数据查询失败');
+            showError('查询数据失败');
         }
     } catch (error) {
-        showError('数据查询失败，请检查网络连接');
-    }
-}
-
-// 删除数据函数
-async function deleteData(index) {
-    try {
-        const response = await fetch(`/api/data/${index}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-
-        if (response.ok) {
-            alert('数据删除成功');
-            queryData(); // 删除后自动刷新数据列表
-        } else {
-            showError('数据删除失败');
-        }
-    } catch (error) {
-        showError('数据删除失败，请检查网络连接');
-    }
-}
-
-// 修改数据函数
-async function editData(index) {
-    const newData = prompt('请输入修改后的数据：');
-    if (newData) {
-        try {
-            const response = await fetch(`/api/data/${index}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ data: newData })
-            });
-
-            if (response.ok) {
-                alert('数据修改成功');
-                queryData(); // 修改后自动刷新数据列表
-            } else {
-                showError('数据修改失败');
-            }
-        } catch (error) {
-            showError('数据修改失败，请检查网络连接');
-        }
+        showError('查询数据失败，请检查网络连接');
     }
 }
