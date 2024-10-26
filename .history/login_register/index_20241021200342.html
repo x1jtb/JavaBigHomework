@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据管理系统</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="page-container">
+    <!-- 左侧背景图 -->
+    <div class="image-container">
+        <img src="images/bg_login-1.png" alt="背景图" class="background-image">
+    </div>
+
+    <!-- 右侧登录和注册表单 -->
+    <div class="form-section">
+        <!-- 公司标志在左上角 -->
+        <img src="images/scnu_logo.png" alt="公司标志" class="logo-left">
+
+        <!-- 登录表单 -->
+        <div class="form-container" id="login-form">
+            <h2 class="login-title">用户登录</h2>
+            <form>
+                <div class="mb-3">
+                    <input type="text" id="login-username" class="form-control" placeholder="用户名" aria-label="用户名" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" id="login-password" class="form-control" placeholder="密码" aria-label="密码" required>
+                </div>
+                <button type="button" class="btn btn-primary w-100" onclick="login()">登录</button>
+            </form>
+            <p class="text-center mt-3">没有账户？<span class="text-primary" onclick="toggleForm()">注册</span></p>
+        </div>
+
+        <!-- 注册表单 -->
+        <div class="form-container" id="register-form" style="display: none;">
+            <h2 class="login-title">用户注册</h2>
+            <form>
+                <div class="mb-3">
+                    <input type="text" id="register-username" class="form-control" placeholder="用户名" aria-label="用户名" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" id="register-password" class="form-control" placeholder="密码" aria-label="密码" required>
+                </div>
+                <button type="button" class="btn btn-primary w-100" onclick="register()">注册</button>
+            </form>
+            <p class="text-center mt-3">已有账户？<span class="text-primary" onclick="toggleForm()">登录</span></p>
+        </div>
+
+        <!-- 数据上传区域 -->
+        <div id="data-container" style="display: none;">
+            <h2>上传数据</h2>
+            <textarea id="data-input" class="form-control mb-3" rows="3" placeholder="请输入数据"></textarea>
+            <button type="button" class="btn btn-success w-100" onclick="uploadData()">上传数据</button>
+
+            <h3 class="mt-4">数据列表</h3>
+            <div id="data-list"></div>
+        </div>
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
