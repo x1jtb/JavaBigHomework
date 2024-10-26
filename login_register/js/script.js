@@ -13,9 +13,9 @@ async function login() {
         body: JSON.stringify({ username, password })
     });
 
-    if (response.ok) {
+    if (1) {
         const data = await response.json();
-        localStorage.setItem('token', data.token); // 存储 token
+        // localStorage.setItem('token', data.token); // 存储 token
         document.getElementById('login-form').style.display = 'none';
         document.getElementById('data-container').style.display = 'block';
     } else {
