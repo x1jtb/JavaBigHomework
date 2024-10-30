@@ -1,3 +1,4 @@
+
 package com.example.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -5,9 +6,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.example.entity.User; // 自定义的 UserDetails 实现
+import com.example.entity.User; // 自定义的 UserDetails 实现i
 import com.example.repository.UserRepository; // 用于与用户数据交互的仓库
-import com.example.entity.User;
+import com.example.security.CustomUserDetails; // 确保包名正确
+
+
 
 @Service // 确保添加了这个注解
 public class UserDetailsServiceImpl implements UserDetailsService {
