@@ -31,7 +31,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthToken(@RequestBody AuthRequest authRequest) throws Exception {
+    public ResponseEntity<String> testPostRequest() {
+        return ResponseEntity.ok("POST request successful");
+    }
+    /*@PostMapping("/login")
+     public ResponseEntity<?> createAuthToken(@RequestBody AuthRequest authRequest) throws Exception {
         try {
             // 尝试进行用户身份验证
             authenticationManager.authenticate(
@@ -48,5 +52,5 @@ public class AuthController {
 
         // 返回生成的 JWT token
         return ResponseEntity.ok(new AuthResponse(jwt));
-    }
+    }*/
 }

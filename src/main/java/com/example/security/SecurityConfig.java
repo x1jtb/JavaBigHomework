@@ -34,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /*
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/login").permitAll() // 允许所有人访问登录接口
@@ -43,6 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 添加 JWT 过滤器
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+         */
+        //草字头，这里有w'n't
     }
 
     @Bean
