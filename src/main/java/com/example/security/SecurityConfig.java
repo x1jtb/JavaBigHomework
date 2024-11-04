@@ -24,6 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService; // 确保有 UserDetailsServiceImpl 的 Bean
 
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter; // 注入 JwtRequestFilter
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
@@ -31,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /*
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/login").permitAll() // 允许所有人访问登录接口
@@ -39,7 +43,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不使用session
 
         // 添加 JWT 过滤器
-        http.addFilterBefore(new JwtRequestFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+         */
+        //草字头，这里有w'n't
     }
 
     @Bean

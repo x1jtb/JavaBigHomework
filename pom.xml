@@ -14,21 +14,32 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.source.encoding>UTF-8</project.build.source.encoding>
         <java.version>1.8</java.version>
+        <spring-boot.version>2.6.6</spring-boot.version> <!-- 添加 Spring Boot 版本属性 -->
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Boot Web Dependency for REST API -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.6.6</version>
         </dependency>
 
         <!-- Spring Boot JPA Dependency for Data Persistence -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>2.6.6</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -45,7 +56,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>2.6.6</version>
         </dependency>
 
         <!-- JWT Dependency for Token-Based Authentication -->
@@ -74,9 +84,20 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.6.6</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- 该依赖为后来添加,为解决缺少jackson依赖 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -85,7 +106,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.6.6</version>
+                <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.example.Application</mainClass> <!-- 指定主类 -->
                 </configuration>
@@ -97,6 +118,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
                 <configuration>
+                    <encoding>UTF-8</encoding>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>

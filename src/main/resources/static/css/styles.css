@@ -1,0 +1,72 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.page-container {
+    display: flex;
+}
+
+.image-container {
+    position: relative;
+    flex: 1; /* 左侧背景图占满空间 */
+}
+
+.background-image {
+    width: 100%;
+    height: 100vh; /* 背景图高度为视口高度 */
+    object-fit: cover; /* 保持宽高比 */
+}
+
+.form-section {
+    width: 400px; /* 登录表单区域宽度 */
+    padding: 20px;
+    background-color: white; /* 表单背景颜色 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+
+.logo-left {
+    width: 100px; /* 公司标志的宽度 */
+    margin-bottom: 20px; /* 公司标志与下方内容的间距 */
+}
+
+/* title.png 的样式 */
+.title-image {
+    width: 100%; /* 根据需要设置宽度 */
+    max-width: 300px; /* 最大宽度 */
+    margin-bottom: 20px; /* 与下方内容保持间距 */
+    display: block; /* 使其独占一行 */
+}
+
+/* DeviconJava.png 的样式 */
+.java-image {
+    position: fixed; /* 固定定位 */
+    bottom: 20px; /* 距离底部 20px */
+    right: 20px; /* 距离右侧 20px */
+    width: 100px; /* 根据需要设置宽度 */
+    height: auto; /* 高度自动调整，保持宽高比 */
+    transition: transform 0.3s ease; /* 鼠标悬停时的过渡效果 */
+}
+
+/* 鼠标悬停在 DeviconJava.png 上时放大效果 */
+.java-image:hover {
+    transform: scale(1.1); /* 放大图片 */
+}
+
+/* “注册”文本的基础样式 */
+.text-primary {
+    color: #007bff; /* 默认颜色 */
+    cursor: pointer; /* 鼠标悬停时变成手指 */
+    transition: color 0.3s ease; /* 添加过渡效果 */
+}
+
+/* 鼠标悬停时改变颜色 */
+.text-primary:hover {
+    color: #0056b3; /* 加深颜色 */
+}
+
+/* 登录表单的标题样式 */
+.login-title {
+    text-align: center; /* 中心对齐 */
+    margin-bottom: 20px; /* 与下方内容保持间距 */
+}
