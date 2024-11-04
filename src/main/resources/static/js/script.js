@@ -6,6 +6,10 @@ function showError(message) {
 async function login() {
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
+    if (!username || !password) {
+        alert("请输入用户名和密码")
+        return
+    }
 
     const response = await fetch('/api/auth/login', {
         method: 'POST',

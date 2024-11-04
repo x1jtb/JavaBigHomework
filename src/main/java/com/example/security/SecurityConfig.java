@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.service.UserDetailsServiceImpl; // 确保正确的包名
@@ -29,29 +31,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+        // 使用 UserDetailsService 和 PasswordEncoder 进行身份验证
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*
-        http.csrf().disable()
+        http.csrf().disable() // 禁用 CSRF 保护
                 .authorizeRequests()
-                .antMatchers("/api/auth/login").permitAll() // 允许所有人访问登录接口
+                .antMatchers("/", "/index.html", "/api/auth/login", "/css/**", "/js/**","/images/**").permitAll() // 允许所有人访问 index.html 和登录接口
                 .anyRequest().authenticated() // 其他请求需要认证
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不使用session
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不使用 session
 
         // 添加 JWT 过滤器
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-         */
-        //草字头，这里有w'n't
     }
 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+        return super.authenticationManagerBean(); // 返回 AuthenticationManager 的 Bean
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // 创建 BCryptPasswordEncoder 的 Bean
     }
 }
