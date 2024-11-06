@@ -17,11 +17,14 @@ async function login() {
         body: JSON.stringify({ username, password })
     });
 
-    if (1) {
+    if (response.ok) {
         const data = await response.json();
         // localStorage.setItem('token', data.token); // 存储 token
         document.getElementById('login-form').style.display = 'none';
-        document.getElementById('data-container').style.display = 'block';
+        // document.getElementById('data-container').style.display = 'block';
+
+        // 登录成功后跳转到 data-management 页面
+        window.location.href="../data-management.html";
     } else {
         alert('登录失败：用户名或密码错误');
     }
