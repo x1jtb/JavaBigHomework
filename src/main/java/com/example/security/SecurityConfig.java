@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable() // 禁用 CSRF 保护
                 .authorizeRequests()
-                .antMatchers("/", "/index.html", "/api/auth/login", "/css/**", "/js/**","/images/**","/data-management.html").permitAll() // 允许所有人访问 index.html 和登录接口
+                .antMatchers("/", "/index.html", "/register.html","/api/auth/register","/api/auth/login", "/css/**", "/js/**","/images/**","/data-management.html").permitAll() // 允许所有人访问 index.html 和登录接口
                 .anyRequest().authenticated() // 其他请求需要认证
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不使用 session

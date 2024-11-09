@@ -8,7 +8,7 @@ public class PasswordEncoderDemo {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         // 明文密码
-        String rawPassword = "";
+        String rawPassword = "huangjiaxi666";
 
         // 对密码进行加密
         String encodedPassword = passwordEncoder.encode(rawPassword);

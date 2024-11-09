@@ -1,8 +1,13 @@
 package com.example.entity; // 确保正确的包声明
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*; // 导入 JPA 注解
 import java.io.Serializable; // 可选：如果您需要实现 Serializable 接口
 
+@Setter
+@Getter
 @Entity
 @Table(name = "users") // 可选：定义表名
 public class User implements Serializable { // 可选：实现 Serializable 接口
@@ -18,11 +23,7 @@ public class User implements Serializable { // 可选：实现 Serializable 接�
     private String password;
 
     // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
+    /*使用了@Setter和@Getter简化
     public void setId(Long id) {
         this.id = id;
     }
@@ -42,4 +43,8 @@ public class User implements Serializable { // 可选：实现 Serializable 接�
     public void setPassword(String password) {
         this.password = password;
     }
+    public Long getId() {
+        return id;
+    }*/
+
 }

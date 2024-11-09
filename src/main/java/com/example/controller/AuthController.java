@@ -1,11 +1,14 @@
 package com.example.controller;
 
+import com.example.entity.User;
+import com.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.util.JwtUtil;
@@ -20,13 +23,17 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 使用构造函数注入依赖项  
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
@@ -54,5 +61,24 @@ public class AuthController {
 
         // 返回生成的 JWT token  
         return ResponseEntity.ok(new AuthResponse(jwt));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
+        // 检查用户名是否已存在
+        if (userRepository.findByUsername(authRequest.getUsername()).isPresent()) {
+            return ResponseEntity.status(400).body("Username already exists");
+        }
+
+        // 创建新用户并设置密码加密
+        User newUser = new User();
+        newUser.setUsername(authRequest.getUsername());
+        newUser.setPassword(passwordEncoder.encode(authRequest.getPassword()));
+
+        // 保存用户到数据库
+        userRepository.save(newUser);
+
+        // 返回成功注册的响应
+        return ResponseEntity.status(201).body("User registered successfully");
     }
 }
