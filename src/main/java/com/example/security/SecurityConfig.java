@@ -29,6 +29,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtRequestFilter jwtRequestFilter; // 注入 JwtRequestFilter
 
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 处理未授权访问的响应
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 使用 UserDetailsService 和 PasswordEncoder 进行身份验证
@@ -39,9 +42,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable() // 禁用 CSRF 保护
                 .authorizeRequests()
-                .antMatchers("/", "/index.html", "/register.html","/api/auth/register","/api/auth/login", "/css/**", "/js/**","/images/**","/data-management.html").permitAll() // 允许所有人访问 index.html 和登录接口
+                .antMatchers("/index.html").permitAll()  //放行/index.html，不需要认证
+                .antMatchers("/","/register.html","/api/auth/register","/api/auth/login", "/css/**", "/js/**","/images/**").permitAll() // 允许所有人访问 loginlogin.html 和登录接口
+                .antMatchers("/admin.html","/data-management.html").permitAll()
+                //.antMatchers("/admin.html").hasAuthority("ADMIN") //进入该页面需要管理员身份
+                //.antMatchers("/data-management.html").hasAnyAuthority("ADMIN","USER") // 进入该页面需要登录
                 .anyRequest().authenticated() // 其他请求需要认证
                 .and()
+                //.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint) // 处理未授权访问
+                //.and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不使用 session
 
         // 添加 JWT 过滤器

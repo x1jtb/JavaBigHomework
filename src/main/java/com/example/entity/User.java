@@ -22,6 +22,10 @@ public class User implements Serializable { // 可选：实现 Serializable 接�
     @Column(nullable = false) // 确保密码不能为空
     private String password;
 
+    @Column(nullable = false)//确保用户权限不能为空
+    private String role;
+
+
     // Getters and Setters
     /*使用了@Setter和@Getter简化
     public void setId(Long id) {

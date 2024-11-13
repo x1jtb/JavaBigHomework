@@ -3,47 +3,65 @@ function showError(message) {
     alert(message);
 }
 
+// 检查用户是否已登录
+function checkLogin() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+    }
+
+}
+
+// 封装 POST 请求函数，自动处理 Authorization 头和错误状态
+async function apiPostRequest(url, body = {}) {
+    const token = localStorage.getItem('token');
+    const headers = { 'Content-Type': 'application/json' };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body)
+    });
+
+    // 如果返回 401 状态码，自动跳转到登录页
+    if (response.status === 401) {
+        alert("身份验证失败，请重新登录");
+        localStorage.removeItem('token');
+        window.location.href = "/index.html";
+        return null;
+    }
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        showError(errorData.message || '请求失败');
+        return null;
+    }
+
+    return response.json();
+}
+
+// 登录函数
 async function login() {
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
     if (!username || !password) {
-        alert("请输入用户名和密码")
-        return
+        alert("请输入用户名和密码");
+        return;
     }
 
-    const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    });
+    const data = await apiPostRequest('/api/auth/login', { username, password });
 
-    if (response.ok) {
-        const data = await response.json();
-        // localStorage.setItem('token', data.token); // 存储 token
-        document.getElementById('login-form').style.display = 'none';
-        // document.getElementById('data-container').style.display = 'block';
+    if (data) {
+        const jwt = data.jwt;
+        const redirectUrl = data.redirectUrl;
 
-        // 登录成功后跳转到 data-management 页面
-        window.location.href="../data-management.html";
-    } else {
-        alert('登录失败：用户名或密码错误');
-    }
-}
-
-// 在后续请求中使用 token
-async function fetchProtectedData() {
-    const token = localStorage.getItem('token');
-
-    const response = await fetch('/api/protected', {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-    } else {
-        alert('未授权访问');
+        localStorage.setItem('token', jwt);
+        window.location.href = redirectUrl;
     }
 }
 
@@ -52,26 +70,48 @@ async function register() {
     const username = document.getElementById('register-username').value;
     const password = document.getElementById('register-password').value;
 
-    try {
-        const response = await fetch('/api/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password })
-        });
+    const data = await apiPostRequest('/api/auth/register', { username, password });
 
-        if (response.ok) {
-            alert('注册成功，请登录');
-            toggleForm(); // 注册成功后切换到登录表单
-        } else {
-            showError('注册失败，请检查输入');
-        }
-    } catch (error) {
-        showError('注册失败，请检查网络连接');
+    if (data) {
+        alert('注册成功，请登录');
+        toggleForm();
+    }
+}
+/*
+// 上传数据函数
+async function uploadData() {
+    const data = document.getElementById('data-input').value;
+
+    const result = await apiPostRequest('/api/data/upload', { data });
+
+    if (result) {
+        alert('数据上传成功');
+        queryData();
     }
 }
 
+// 查询数据函数（使用 POST 方法）
+async function queryData() {
+    const result = await apiPostRequest('/api/data/query', {});
+
+    if (result) {
+        const dataList = document.getElementById('data-list');
+        dataList.innerHTML = '';
+
+        result.forEach((item) => {
+            const div = document.createElement('div');
+            div.classList.add('data-item');
+            div.innerHTML = `<span>${item}</span>`;
+            dataList.appendChild(div);
+        });
+    }
+}
+
+// 页面加载时检查登录状态
+window.onload = () => {
+    checkLogin();
+};
+*/
 // 切换表单的显示
 function toggleForm() {
     const loginForm = document.getElementById('login-form');
@@ -83,54 +123,5 @@ function toggleForm() {
     } else {
         loginForm.style.display = 'none';
         registerForm.style.display = 'block';
-    }
-}
-
-// 上传数据函数
-async function uploadData() {
-    const data = document.getElementById('data-input').value;
-
-    try {
-        const response = await fetch('/api/data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ data })
-        });
-
-        if (response.ok) {
-            alert('数据上传成功');
-            queryData(); // 上传成功后自动刷新数据列表
-        } else {
-            showError('数据上传失败');
-        }
-    } catch (error) {
-        showError('数据上传失败，请检查网络连接');
-    }
-}
-
-// 查询数据函数
-async function queryData() {
-    try {
-        const response = await fetch('/api/data');
-        if (response.ok) {
-            const data = await response.json();
-            const dataList = document.getElementById('data-list');
-            dataList.innerHTML = ''; // 清空旧数据
-
-            data.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.classList.add('data-item');
-                div.innerHTML = `
-                    <span>${item}</span>
-                `;
-                dataList.appendChild(div);
-            });
-        } else {
-            showError('查询数据失败');
-        }
-    } catch (error) {
-        showError('查询数据失败，请检查网络连接');
     }
 }

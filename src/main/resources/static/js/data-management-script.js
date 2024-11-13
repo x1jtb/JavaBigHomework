@@ -4,6 +4,28 @@ const fileMessage = document.getElementById('fileMessage');
 let selectedFile = null;
 
 // 获取数据列表并渲染
+// 页面加载时检查登录状态
+window.onload = () => {
+    checkLogin();
+};
+
+// 检查用户是否已登录
+function checkLogin() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("请先登录");   //alert会阻塞运行
+        window.location.href = "/index.html";
+    }
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = "/index.html";
+    }
+});
+
 function fetchData() {
     // 这里使用假数据测试
     const dummyData = [

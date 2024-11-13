@@ -1,4 +1,18 @@
 // admin.js
+// 页面加载时检查登录状态
+window.onload = () => {
+    checkLogin();
+};
+
+// 检查用户是否已登录
+function checkLogin() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("请先登录");   //alert会阻塞运行
+        window.location.href = "/index.html";
+    }
+
+}
 
 // 模拟用户数据
 let users = [

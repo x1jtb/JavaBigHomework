@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.entity.User;
 import com.example.repository.UserRepository;
+import com.example.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,8 +60,20 @@ public class AuthController {
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
         System.out.println("Generated JWT token for user: " + userDetails.getUsername());
 
+        // 获取用户角色
+        String role = ((CustomUserDetails) userDetails).getUser().getRole();
+
+        System.out.println(role); //输出用户权限
+
+        // 判断角色并跳转到相应的页面
+        if ("ADMIN".equals(role)) {
+            return ResponseEntity.ok(new AuthResponse(jwt, "/admin.html"));
+        } else {
+            return ResponseEntity.ok(new AuthResponse(jwt, "/data-management.html"));
+        }
+
         // 返回生成的 JWT token  
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        //return ResponseEntity.ok(new AuthResponse(jwt));
     }
 
     @PostMapping("/register")
