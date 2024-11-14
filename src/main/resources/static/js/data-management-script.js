@@ -3,29 +3,41 @@ const fileDropArea = document.getElementById('fileDropArea');
 const fileMessage = document.getElementById('fileMessage');
 let selectedFile = null;
 
-// 获取数据列表并渲染
+
 // 页面加载时检查登录状态
 window.onload = () => {
     checkLogin();
 };
 
 // 检查用户是否已登录
-function checkLogin() {
+async function checkLogin() {
     const token = localStorage.getItem('token');
     if (!token) {
-        alert("请先登录");   //alert会阻塞运行
+        alert("请先登录");
         window.location.href = "/index.html";
+        return;
     }
 
+    // 使用 POST 请求调用 API 以验证权限
+    const response = await fetch('/api/auth/authority/user', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({}) // 如果需要传递额外的参数，可以在此处添加到对象中
+    });
+
+    if (!response.ok) {
+        alert("权限认证失败，请重新登录");
+        window.location.href = "/index.html";
+    }
+    // 处理权限认证成功的逻辑
+    const data = await response.json();
+    console.log('权限认证通过', data);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = "/index.html";
-    }
-});
-
+// 获取数据列表并渲染
 function fetchData() {
     // 这里使用假数据测试
     const dummyData = [

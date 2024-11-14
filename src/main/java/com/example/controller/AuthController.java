@@ -94,4 +94,18 @@ public class AuthController {
         // 返回成功注册的响应
         return ResponseEntity.status(201).body("User registered successfully");
     }
+
+    @PostMapping("/authority/admin")
+    public ResponseEntity<?> authority(@RequestBody AuthRequest authRequest) {
+        // 返回权限认证成功的响应
+        System.out.println("成功接受到admin请求!");
+        return ResponseEntity.ok("管理员认证成功!");
+    }
+
+    @PostMapping("/authority/user")
+    public ResponseEntity<?> user(@RequestBody AuthRequest authRequest) {
+        // 返回权限认证成功的响应
+        return ResponseEntity.ok("用户认证成功!");
+    }
+
 }

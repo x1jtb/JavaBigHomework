@@ -3,6 +3,12 @@ function showError(message) {
     alert(message);
 }
 
+window.onload = () => {
+    // 清空本地存储的 token
+    localStorage.removeItem('token');
+    console.log('本地 token 已清空');
+};
+
 // 检查用户是否已登录
 function checkLogin() {
     const token = localStorage.getItem('token');

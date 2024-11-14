@@ -5,13 +5,31 @@ window.onload = () => {
 };
 
 // 检查用户是否已登录
-function checkLogin() {
+async function checkLogin() {
     const token = localStorage.getItem('token');
     if (!token) {
-        alert("请先登录");   //alert会阻塞运行
+        alert("请先登录");
         window.location.href = "/index.html";
+        return;
     }
 
+    // 使用 POST 请求调用 API 以验证权限
+    const response = await fetch('/api/auth/authority/admin', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({}) // 如果需要传递额外的参数，可以在此处添加到对象中
+    });
+    if (!response.ok) {
+        alert("权限认证失败，请重新登录");
+        window.location.href = "/index.html";
+
+    // 处理权限认证成功的逻辑
+    const data = await response.json();
+    console.log('权限认证通过', data);
+ }
 }
 
 // 模拟用户数据

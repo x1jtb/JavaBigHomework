@@ -27,7 +27,7 @@ async function register() {
         // 检查响应状态
         if (response.ok) {
             alert('注册成功，请登录');
-            window.location.href = '/loginlogin.html';  // 跳转到登录页面
+            window.location.href = '/index.html';  // 跳转到登录页面
         } else {
             showError('注册失败，请检查输入');
         }

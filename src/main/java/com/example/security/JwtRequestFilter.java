@@ -37,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         // 检查是否有授权头
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            System.out.println("1.检查是否执行");
+            //System.out.println("1.检查是否执行");
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(jwt);
         }
@@ -45,19 +45,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 如果用户名存在且当前没有用户认证
         if ((username != null && SecurityContextHolder.getContext().getAuthentication() == null)) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            System.out.println("2.检查是否执行并输出:"+userDetails.getAuthorities());
+            //System.out.println("2.检查是否执行并输出:"+userDetails.getAuthorities());
             // 检查 token 是否有效
             if (jwtUtil.isTokenValid(jwt, userDetails.getUsername())) {
-                System.out.println("3.检查是否执行并输出:"+userDetails.getAuthorities());
+               System.out.println("3.检查是否执行并输出:"+userDetails.getAuthorities());
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
-        System.out.println("Authorization Header: " + authorizationHeader);
-        System.out.println("Extracted Username: " + username);
-        System.out.println("Jwt: " + jwt);
+        //System.out.println("Authorization Header: " + authorizationHeader);
+        //System.out.println("Extracted Username: " + username);
+        //System.out.println("Jwt: " + jwt);
 
         chain.doFilter(request, response); // 继续过滤器链
     }
