@@ -25,7 +25,7 @@
             <version>2.6.6</version>
         </dependency>
 
-        <!-- Spring Boot JPA Dependency for Data.java Persistence -->
+        <!-- Spring Boot JPA Dependency for Data Persistence -->
         <!-- jpa-->
 
         <dependency>
