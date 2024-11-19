@@ -71,9 +71,6 @@ public class AuthController {
         } else {
             return ResponseEntity.ok(new AuthResponse(jwt, "/data-management.html"));
         }
-
-        // 返回生成的 JWT token  
-        //return ResponseEntity.ok(new AuthResponse(jwt));
     }
 
     @PostMapping("/register")
@@ -98,13 +95,14 @@ public class AuthController {
     @PostMapping("/authority/admin")
     public ResponseEntity<?> authority(@RequestBody AuthRequest authRequest) {
         // 返回权限认证成功的响应
-        System.out.println("成功接受到admin请求!");
+        System.out.println("成功接受到admin请求!"); //在服务器输出权限认证成功信息
         return ResponseEntity.ok("管理员认证成功!");
     }
 
     @PostMapping("/authority/user")
     public ResponseEntity<?> user(@RequestBody AuthRequest authRequest) {
         // 返回权限认证成功的响应
+        System.out.println("成功接受到user请求!"); //在服务器输出权限认证成功信息
         return ResponseEntity.ok("用户认证成功!");
     }
 

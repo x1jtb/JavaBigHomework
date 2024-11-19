@@ -49,8 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin.html","/data-management.html").permitAll()
                 .anyRequest().authenticated() // 其他请求需要认证
                 .and()
-                //.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint) // 处理未授权访问
-                //.and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint) // 处理未授权访问
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不使用 session
 
         // 添加 JWT 过滤器

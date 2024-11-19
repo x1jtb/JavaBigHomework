@@ -6,13 +6,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
-import com.example.entity.User; // 自定义的 UserDetails 实现i
-
-import javax.management.relation.Relation;
-
+import com.example.entity.User; // 自定义的 UserDetails 实现
 
 public class CustomUserDetails implements UserDetails {
-    private User user; // 引用您自己的 User 类
+    private User user;
 
     public CustomUserDetails(User user) {
         this.user = user;
@@ -22,8 +19,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         System.out.println("返回用户权限输出:"+new SimpleGrantedAuthority(user.getRole()));
         return Collections.singletonList(new SimpleGrantedAuthority(user.getRole())); // 使用 Collections.singletonList
-        // 返回用户权限，您需要根据自己的实现来修改
-        //return null;  空为皆可，请替换为实际的权限集合
+        // 返回用户权限
     }
 
     @Override

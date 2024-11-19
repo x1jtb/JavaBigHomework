@@ -27,14 +27,14 @@ async function checkLogin() {
         },
         body: JSON.stringify({}) // 如果需要传递额外的参数，可以在此处添加到对象中
     });
-
     if (!response.ok) {
         alert("权限认证失败，请重新登录");
         window.location.href = "/index.html";
+
+        // 处理权限认证成功的逻辑
+        const data = await response.json();
+        console.log('权限认证通过', data);
     }
-    // 处理权限认证成功的逻辑
-    const data = await response.json();
-    console.log('权限认证通过', data);
 }
 
 // 获取数据列表并渲染
@@ -90,9 +90,11 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
     };
 
     // 发送 POST 请求上传数据
+    const token = localStorage.getItem('token');//获取token
     fetch(apiUrl, {
         method: 'POST',
         headers: {
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dataToSend)

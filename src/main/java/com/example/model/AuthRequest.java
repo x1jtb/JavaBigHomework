@@ -9,7 +9,7 @@ public class AuthRequest {
     private String password;
 
     /*
-    Getters and Setters
+    使用了Getter和Setter简化
     public String getUsername() {
         return username;
     }

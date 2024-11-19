@@ -4,13 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*; // 导入 JPA 注解
-import java.io.Serializable; // 可选：如果您需要实现 Serializable 接口
+import java.io.Serializable;
 
 @Setter
 @Getter
 @Entity
-@Table(name = "users") // 可选：定义表名
-public class User implements Serializable { // 可选：实现 Serializable 接口
+@Table(name = "users") // 定义表名
+public class User implements Serializable { //实现 Serializable 接口
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
