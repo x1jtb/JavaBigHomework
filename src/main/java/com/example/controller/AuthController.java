@@ -84,6 +84,7 @@ public class AuthController {
         User newUser = new User();
         newUser.setUsername(authRequest.getUsername());
         newUser.setPassword(passwordEncoder.encode(authRequest.getPassword()));
+        newUser.setRole("USER");  //设置默认注册用户权限为USER
 
         // 保存用户到数据库
         userRepository.save(newUser);
