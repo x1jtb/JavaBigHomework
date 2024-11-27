@@ -69,11 +69,11 @@ function renderDataList(data) {
 document.getElementById('dataForm').addEventListener('submit', async event => {
     event.preventDefault();
 
-    const name = document.getElementById('name').value;
-    const content = document.getElementById('content').value;
+    const dataName = document.getElementById('name').value;
+    const dataContent = document.getElementById('content').value;
 
     // 检查是否有内容或文件，确保至少满足一个条件
-    if (!content && !selectedFile) {
+    if (!dataContent && !selectedFile) {
         alert("请提供文字内容或选择文件进行上传");
         return;
     }
@@ -84,8 +84,8 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
     }
 
     const dataToSend = {
-        name,
-        content: content || fileContent,
+        dataName,
+        dataContent: dataContent || fileContent,
         fileContent: fileContent || null
     };
 

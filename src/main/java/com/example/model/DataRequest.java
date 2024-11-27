@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class DataRequest {
     private Integer userID;
-    private String dataName;
-    private String dataContent;
+    private String DataName;
+    private String DataContent;
+    private String FileContent;
 }

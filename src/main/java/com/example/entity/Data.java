@@ -22,6 +22,8 @@ public class Data { // 保留类名 Data，但手动实现所需方法
     private String DataName;
 
     @Lob
+    private String FileContent;  //文件内容，相关内容未完成
+
     private String DataContent;
 
     private LocalDateTime CreatedAt;

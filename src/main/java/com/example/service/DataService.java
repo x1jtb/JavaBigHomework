@@ -18,7 +18,10 @@ public class DataService {
         Data data = new Data();
         data.setUserID(dataRequest.getUserID());
         data.setDataName(dataRequest.getDataName());
+        System.out.println("DataName="+dataRequest.getDataName());//测试输出
         data.setDataContent(dataRequest.getDataContent());
+        System.out.println("DataContent="+dataRequest.getDataContent());//测试输出
+        data.setFileContent(dataRequest.getFileContent());
         data.setCreatedAt(LocalDateTime.now());
         data.setUpdatedAt(LocalDateTime.now());
         return dataRepository.save(data);
