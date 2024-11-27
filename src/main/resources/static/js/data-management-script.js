@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:3000/data'; // 替换为实际的后端API URL
+const apiUrl = 'http://localhost:8080/api/data'; // 替换为实际的后端API URL
 const fileDropArea = document.getElementById('fileDropArea');
 const fileMessage = document.getElementById('fileMessage');
 let selectedFile = null;
@@ -91,7 +91,7 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
 
     // 发送 POST 请求上传数据
     const token = localStorage.getItem('token');//获取token
-    fetch(apiUrl, {
+    fetch('/api/data/add', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,

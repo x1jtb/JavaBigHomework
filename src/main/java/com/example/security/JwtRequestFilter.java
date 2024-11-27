@@ -48,7 +48,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             //System.out.println("2.检查是否执行并输出:"+userDetails.getAuthorities());
             // 检查 token 是否有效
             if (jwtUtil.isTokenValid(jwt, userDetails.getUsername())) {
-               System.out.println("3.检查是否执行并输出:"+userDetails.getAuthorities());
+               //System.out.println("3.检查是否执行并输出:"+userDetails.getAuthorities());
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
