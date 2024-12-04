@@ -1,4 +1,4 @@
-// 通用的错误提示函数
+// 错误提示函数
 function showError(message) {
     alert(message);
 }

@@ -118,21 +118,24 @@ async function fetchAllData() {
 
 // 渲染数据列表
 function renderDataList(data) {
-    const dataList = document.getElementById('dataList');
-    dataList.innerHTML = ''; // 清空当前列表
+    const dataTableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+    dataTableBody.innerHTML = ''; // 清空当前表格
 
     data.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span>${item.dataName}: ${item.dataContent}</span>
-            <div class="actions">
+        const row = dataTableBody.insertRow();
+        row.innerHTML = `
+            <td>${item.dataID}</td>
+            <td>${item.dataName}</td>
+            <td>${item.CreatedAt}</td>
+            <td>${item.UpdatedAt}</td>
+            <td>
                 <button onclick="editData('${item.dataID}', '${item.dataName}', '${item.dataContent}')">编辑</button>
                 <button class="delete" onclick="deleteData('${item.dataID}')">删除</button>
-            </div>
+            </td>
         `;
-        dataList.appendChild(li);
     });
 }
+
 
 //编辑按钮
 function editData(dataID, dataName, dataContent) {
@@ -155,6 +158,7 @@ document.getElementById('editForm').addEventListener('submit', async (event) => 
     const dataName = document.getElementById('editName').value;
     const dataContent = document.getElementById('editContent').value;
 
+
     const token = localStorage.getItem('token');
     if (!token) {
         alert("请先登录");
@@ -169,7 +173,7 @@ document.getElementById('editForm').addEventListener('submit', async (event) => 
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ dataName, dataContent })
+            body: JSON.stringify({ dataID, dataName, dataContent, CreatedAt, UpdatedAt})
         });
 
         if (response.ok) {

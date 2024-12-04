@@ -1,5 +1,4 @@
-package com.example.entity; // 确保正确的包声明
-
+package com.example.entity;
 import lombok.Getter;
 import lombok.Setter;
 

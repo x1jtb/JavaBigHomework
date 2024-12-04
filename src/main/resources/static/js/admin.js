@@ -20,7 +20,7 @@ async function checkLogin() {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({}) // 如果需要传递额外的参数，可以在此处添加到对象中
+        body: JSON.stringify({})
     });
     if (!response.ok) {
         alert("权限认证失败，请重新登录");
@@ -137,8 +137,6 @@ function deleteUser(id) {
 function deleteUserData(id) {
     const user = users.find(u => u.id === id);
     alert(`删除用户数据：\nID: ${user.id}\n用户名: ${user.username} 的数据已删除`);
-    // 这里可以添加删除用户数据的逻辑
-    // 比如：删除该用户在数据库或本地存储中的所有数据
 }
 
 // 初始渲染所有用户

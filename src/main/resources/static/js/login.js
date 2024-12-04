@@ -1,4 +1,4 @@
-// 通用的错误提示函数
+// 错误提示函数
 function showError(message) {
     alert(message);
 }
@@ -83,41 +83,7 @@ async function register() {
         toggleForm();
     }
 }
-/*
-// 上传数据函数
-async function uploadData() {
-    const data = document.getElementById('data-input').value;
 
-    const result = await apiPostRequest('/api/data/upload', { data });
-
-    if (result) {
-        alert('数据上传成功');
-        queryData();
-    }
-}
-
-// 查询数据函数（使用 POST 方法）
-async function queryData() {
-    const result = await apiPostRequest('/api/data/query', {});
-
-    if (result) {
-        const dataList = document.getElementById('data-list');
-        dataList.innerHTML = '';
-
-        result.forEach((item) => {
-            const div = document.createElement('div');
-            div.classList.add('data-item');
-            div.innerHTML = `<span>${item}</span>`;
-            dataList.appendChild(div);
-        });
-    }
-}
-
-// 页面加载时检查登录状态
-window.onload = () => {
-    checkLogin();
-};
-*/
 // 切换表单的显示
 function toggleForm() {
     const loginForm = document.getElementById('login-form');

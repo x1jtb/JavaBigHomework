@@ -13,18 +13,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.service.UserDetailsServiceImpl; // 确保正确的包名
-import com.example.util.JwtUtil; // 确保正确的包名
+import com.example.service.UserDetailsServiceImpl;
+import com.example.util.JwtUtil;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private JwtUtil jwtUtil; // 确保有 JwtUtil 的 Bean
+    private JwtUtil jwtUtil;
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService; // 确保有 UserDetailsServiceImpl 的 Bean
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter; // 注入 JwtRequestFilter

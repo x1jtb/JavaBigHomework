@@ -121,3 +121,22 @@ li {
 .modal.open {
     display: block;
 }
+
+#dataTable {
+    width: 100%;
+    max-width: 600px;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+#dataTable th, #dataTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+#dataTable th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
