@@ -173,7 +173,7 @@ document.getElementById('editForm').addEventListener('submit', async (event) => 
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ dataID, dataName, dataContent, CreatedAt, UpdatedAt})
+            body: JSON.stringify({ dataID, dataName, dataContent})
         });
 
         if (response.ok) {

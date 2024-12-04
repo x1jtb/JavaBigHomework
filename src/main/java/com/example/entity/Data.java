@@ -27,8 +27,8 @@ public class Data { // 保留类名 Data，但手动实现所需方法
 
     private String DataContent;
 
-    @Column
     private LocalDateTime CreatedAt;
+
     private LocalDateTime UpdatedAt;
 
     @Override
