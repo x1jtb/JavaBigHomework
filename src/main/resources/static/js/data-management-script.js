@@ -134,6 +134,58 @@ function renderDataList(data) {
     });
 }
 
+//编辑按钮
+function editData(dataID, dataName, dataContent) {
+    document.getElementById('editDataID').value = dataID;
+    document.getElementById('editName').value = dataName;
+    document.getElementById('editContent').value = dataContent;
+    document.getElementById('editModal').classList.add('open');
+}
+
+//关闭弹窗
+document.getElementById('closeModal').addEventListener('click', () => {
+    document.getElementById('editModal').classList.remove('open');
+});
+
+//提交编辑后的数据
+document.getElementById('editForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const dataID = document.getElementById('editDataID').value;
+    const dataName = document.getElementById('editName').value;
+    const dataContent = document.getElementById('editContent').value;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/data/${dataID}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ dataName, dataContent })
+        });
+
+        if (response.ok) {
+            alert("修改成功");
+            document.getElementById('editModal').classList.remove('open');
+            fetchAllData(); // 重新加载数据
+        } else {
+            alert("修改失败");
+        }
+    } catch (error) {
+        console.error("Error updating data:", error);
+        alert("网络错误，请稍后重试");
+    }
+});
+
+
 // 上传数据，包括可选的文件
 document.getElementById('dataForm').addEventListener('submit', async event => {
     event.preventDefault();

@@ -88,10 +88,27 @@ public class DataController {
         }
     }
 
+    //编辑指定数据
+    @PutMapping("/{dataID}")
+    public ResponseEntity<?> updateData(@PathVariable Long dataID, @RequestBody DataRequest dataRequest) {
+
+        Optional<Data> optionalData = dataRepository.findById(Math.toIntExact(dataID));
+        if (optionalData.isPresent()) {
+            Data data = optionalData.get();
+            data.setDataName(dataRequest.getDataName());
+            data.setDataContent(dataRequest.getDataContent());
+            dataRepository.save(data);
+            return ResponseEntity.ok("数据更新成功");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("数据未找到");
+        }
+    }
+
+
     //删除指定数据
-    @DeleteMapping("/{dataid}")
-    public ResponseEntity<Void> deleteData(@PathVariable Long dataid) {
-        boolean deleted = dataService.deleteDataById(dataid);
+    @DeleteMapping("/{dataID}")
+    public ResponseEntity<Void> deleteData(@PathVariable Long dataID) {
+        boolean deleted = dataService.deleteDataById(dataID);
         if (deleted) {
             return ResponseEntity.ok().build();
         } else {

@@ -97,3 +97,27 @@ li {
 #exportButton:hover {
     background-color: #0056b3;
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.modal button {
+    margin: 10px;
+}
+
+.modal.open {
+    display: block;
+}

@@ -28,6 +28,22 @@
         <button id="exportButton">导出数据</button>
     </div>
 
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>编辑数据</h2>
+            <form id="editForm">
+                <input type="hidden" id="editDataID">
+                <label for="editName">名称:</label>
+                <input type="text" id="editName" required>
+                <label for="editContent">内容:</label>
+                <textarea id="editContent" rows="4"></textarea>
+                <button type="submit">保存修改</button>
+                <button type="button" id="closeModal">取消</button>
+            </form>
+        </div>
+    </div>
+
     <script src="js/data-management-script.js"></script>
 </body>
 </html>
+
