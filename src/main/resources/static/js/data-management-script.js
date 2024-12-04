@@ -4,9 +4,10 @@ const fileMessage = document.getElementById('fileMessage');
 let selectedFile = null;
 
 
-// 页面加载时检查登录状态
-window.onload = () => {
-    checkLogin();
+// 页面加载时检查登录状态并获取所有数据
+window.onload = async () => {
+    await checkLogin(); // 确保用户登录
+    await fetchAllData(); // 自动获取所有数据
 };
 
 // 检查用户是否已登录
@@ -37,28 +38,96 @@ async function checkLogin() {
     }
 }
 
-// 获取数据列表并渲染
-function fetchData() {
-    // 这里使用假数据测试
-    const dummyData = [
-        { id: 1, name: '示例文件1.txt', content: 'huamgjiaxi6666' },
-        { id: 2, name: '示例文件2.txt', content: 'xljtb' },
-    ];
-    renderDataList(dummyData);
+// 获取特定数据并渲染
+async function fetchData(dataID) {
+    const token = localStorage.getItem('token'); // 获取JWT Token
+
+    if (!token) {               // 确保用户已登录
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    if (typeof dataID === 'undefined' || isNaN(dataID)) {
+        console.error("fetchData 调用失败：无效的 dataID");
+        return;
+    }
+    // 如果没有token，直接返回并跳转到登录页面
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    try {
+        // 发送 GET 请求获取指定 dataID 的数据
+        const response = await fetch(`/api/data/${dataID}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        // 根据返回的状态码进行处理
+        if (response.ok) {
+            const data = await response.json(); // 获取数据
+            renderDataList([data]); // 渲染数据列表，这里假设只返回一个数据项
+        } else if (response.status === 404) {
+            alert("数据未找到");
+        } else if (response.status === 403) {
+            alert("没有权限访问该数据");
+        } else {
+            alert("获取数据失败");
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        alert("网络错误，请稍后重试");
+    }
+}
+
+// 获取所有数据并渲染
+async function fetchAllData() {
+    const token = localStorage.getItem('token'); // 确保用户已登录
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/data/all', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const allData = await response.json(); // 获取所有数据
+            renderDataList(allData); // 渲染数据列表
+        } else {
+            alert("获取数据失败");
+        }
+    } catch (error) {
+        console.error("Error fetching all data:", error);
+        alert("网络错误，请稍后重试");
+    }
 }
 
 // 渲染数据列表
 function renderDataList(data) {
     const dataList = document.getElementById('dataList');
-    dataList.innerHTML = '';
+    dataList.innerHTML = ''; // 清空当前列表
 
     data.forEach(item => {
         const li = document.createElement('li');
         li.innerHTML = `
-            <span>${item.name}: ${item.content}</span>
+            <span>${item.dataName}: ${item.dataContent}</span>
             <div class="actions">
-                <button onclick="editData('${item.id}', '${item.name}', '${item.content}')">编辑</button>
-                <button class="delete" onclick="deleteData('${item.id}')">删除</button>
+                <button onclick="editData('${item.dataID}', '${item.dataName}', '${item.dataContent}')">编辑</button>
+                <button class="delete" onclick="deleteData('${item.dataID}')">删除</button>
             </div>
         `;
         dataList.appendChild(li);
@@ -91,7 +160,7 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
 
     // 发送 POST 请求上传数据
     const token = localStorage.getItem('token');//获取token
-    fetch('/api/data/add', {
+    fetch('/api/data/upload', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -101,12 +170,51 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
     })
     .then(response => response.json())
     .then(() => {
-        fetchData(); // 刷新数据列表
+        fetchAllData();     // 重新获取数据
+        renderDataList();   // 刷新数据列表
         document.getElementById('dataForm').reset(); // 重置表单
         resetFileUpload();  // 重置文件上传区域
     })
     .catch(error => console.error('Error uploading data:', error));
 });
+
+// 删除指定数据
+async function deleteData(dataID) {
+    const token = localStorage.getItem('token'); // 获取JWT Token
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    if (!dataID) {
+        alert("无效的ID");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/data/${dataID}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            alert("删除成功");
+            await fetchAllData(); // 重新加载数据
+        } else if (response.status === 404) {
+            alert("未找到该数据");
+        } else {
+            alert("删除失败");
+        }
+    } catch (error) {
+        console.error("Error deleting data:", error);
+        alert("网络错误，请稍后重试");
+    }
+}
+
 
 // 处理文件拖拽事件
 fileDropArea.addEventListener('dragover', (event) => {
@@ -213,4 +321,4 @@ function replacer(key, value) {
 }
 
 // 初始化数据列表
-fetchData();
+//fetchData();
