@@ -126,8 +126,8 @@ function renderDataList(data) {
         row.innerHTML = `
             <td>${item.dataID}</td>
             <td>${item.dataName}</td>
-            <td>${item.CreatedAt}</td>
-            <td>${item.UpdatedAt}</td>
+            <td>${item.createdAt}</td>
+            <td>${item.updatedAt}</td>
             <td>
                 <button onclick="editData('${item.dataID}', '${item.dataName}', '${item.dataContent}')">编辑</button>
                 <button class="delete" onclick="deleteData('${item.dataID}')">删除</button>

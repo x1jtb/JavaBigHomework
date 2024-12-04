@@ -97,8 +97,7 @@ public class DataController {
             Data data = optionalData.get();
             data.setDataName(dataRequest.getDataName());
             data.setDataContent(dataRequest.getDataContent());
-            data.setCreatedAt(dataRequest.getCreatedAt());
-            data.setUpdatedAt(dataRequest.getUpdatedAt());
+
 
             dataRepository.save(data);
             return ResponseEntity.ok("数据更新成功");
