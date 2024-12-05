@@ -95,9 +95,9 @@ public class DataController {
         Optional<Data> optionalData = dataRepository.findById(Math.toIntExact(dataID));
         if (optionalData.isPresent()) {
             Data data = optionalData.get();
-            data.setDataName(dataRequest.getDataName());
-            data.setDataContent(dataRequest.getDataContent());
-
+            data.setDataName(dataRequest.getDataName());        //更改数据标题
+            data.setDataContent(dataRequest.getDataContent());  //更改数据内容
+            data.setUpdatedAt(LocalDateTime.now());             //更改修改日期为系统时间
 
             dataRepository.save(data);
             return ResponseEntity.ok("数据更新成功");

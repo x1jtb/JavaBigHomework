@@ -140,3 +140,6 @@ li {
     color: #333;
 }
 
+.selected { /*渲染选中演示*/
+    background-color: #e0f7fa; /* 高亮颜色 */
+}

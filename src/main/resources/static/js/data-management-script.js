@@ -2,6 +2,7 @@ const apiUrl = 'http://localhost:8080/api/data'; // 替换为实际的后端API 
 const fileDropArea = document.getElementById('fileDropArea');
 const fileMessage = document.getElementById('fileMessage');
 let selectedFile = null;
+let selectedData = null; // 存储选中的数据项
 
 
 // 页面加载时检查登录状态并获取所有数据
@@ -121,10 +122,12 @@ function renderDataList(data) {
     const dataTableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
     dataTableBody.innerHTML = ''; // 清空当前表格
 
+    let counter = 1; // 计数器，从1开始
+
     data.forEach(item => {
         const row = dataTableBody.insertRow();
         row.innerHTML = `
-            <td>${item.dataID}</td>
+            <td>${counter}</td> <!-- 显示计数器值作为编号 -->
             <td>${item.dataName}</td>
             <td>${item.createdAt}</td>
             <td>${item.updatedAt}</td>
@@ -133,6 +136,26 @@ function renderDataList(data) {
                 <button class="delete" onclick="deleteData('${item.dataID}')">删除</button>
             </td>
         `;
+
+        // 添加点击事件用于选中数据
+        row.addEventListener('click', () => {
+            // 检查当前点击的行是否已经被选中
+            if (row.classList.contains('selected')) {
+                // 如果该行已经被选中，则取消选中状态
+                row.classList.remove('selected');
+                selectedData = null; // 清除选中的数据
+            } else {
+                // 如果该行没有被选中，则选中该行
+                const previousSelected = document.querySelector('.selected');
+                if (previousSelected) {
+                    previousSelected.classList.remove('selected'); // 移除上一个选中的行
+                }
+                row.classList.add('selected'); // 添加当前行的选中状态
+                selectedData = item; // 存储当前选中的数据项
+            }
+        });
+
+        counter++; // 每渲染一条数据，计数器加1
     });
 }
 
@@ -173,7 +196,7 @@ document.getElementById('editForm').addEventListener('submit', async (event) => 
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ dataID, dataName, dataContent})
+            body: JSON.stringify({ dataName, dataContent})
         });
 
         if (response.ok) {
@@ -323,58 +346,82 @@ function resetFileUpload() {
 
 // 导出数据
 document.getElementById('exportButton').addEventListener('click', () => {
+    // 获取选择的导出格式
     const format = document.getElementById('exportFormat').value;
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            if (format === 'json') {
-                exportToJson(data);
-            } else if (format === 'csv') {
-                exportToCsv(data);
-            }
-        })
-        .catch(error => console.error('Error fetching data for export:', error));
+
+    // 判断是否有选中的数据
+    if (selectedData) {
+        // 如果有选中的数据，则导出选中的数据
+        const dataToExport = {
+            dataName: selectedData.dataName,
+            dataContent: selectedData.dataContent,
+            fileContent: selectedData.fileContent,
+            createdAt: selectedData.createdAt,
+            updatedAt: selectedData.updatedAt
+        };
+
+        const fileName = selectedData.dataName || 'data'; // 使用选中数据的 dataName 作为文件名，如果没有则使用默认的 'data'
+
+        if (format === 'json') {
+            exportToJson(dataToExport, fileName);
+        } else if (format === 'csv') {
+            exportToCsv(dataToExport, fileName);
+        }
+    } else {
+        // 如果没有选中的数据，则导出所有数据
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const fileName = 'all_data'; // 默认文件名
+                if (format === 'json') {
+                    exportToJson(data, fileName);
+                } else if (format === 'csv') {
+                    exportToCsv(data, fileName);
+                }
+            })
+            .catch(error => console.error('Error fetching data for export:', error));
+    }
 });
 
 // 导出为 JSON
-function exportToJson(data) {
-    const jsonString = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+function exportToJson(data, fileName) {
+    const jsonString = JSON.stringify(data, null, 2); // 转为格式化的JSON字符串
+    const blob = new Blob([jsonString], { type: 'application/json' }); // 创建一个Blob对象
+    const url = URL.createObjectURL(blob); // 创建一个URL来下载Blob数据
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'data.json';
-    a.click();
-    URL.revokeObjectURL(url); // 释放 Blob 对象
+    a.download = `${fileName}.json`; // 使用传入的 fileName 作为下载文件名
+    a.click(); // 触发下载
+    URL.revokeObjectURL(url); // 释放URL对象
 }
 
 // 导出为 CSV
-function exportToCsv(data) {
+function exportToCsv(data, fileName) {
     const csvRows = [];
-    const headers = Object.keys(data[0]);
+    const headers = Object.keys(data); // 获取数据的键作为CSV的表头
     csvRows.push(headers.join(',')); // 添加表头
 
-    for (const row of data) {
-        csvRows.push(headers.map(field => JSON.stringify(row[field], replacer)).join(','));
-    }
+    // 将单个对象转换为 CSV 格式
+    csvRows.push(headers.map(field => JSON.stringify(data[field], replacer)).join(',')); // 转换每个字段为CSV格式
 
-    const csvString = csvRows.join('\n');
-    const blob = new Blob([csvString], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
+    const csvString = csvRows.join('\n'); // 用换行符连接每一行
+    const blob = new Blob([csvString], { type: 'text/csv' }); // 创建Blob对象
+    const url = URL.createObjectURL(blob); // 创建一个URL来下载CSV数据
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'data.csv';
-    a.click();
-    URL.revokeObjectURL(url); // 释放 Blob 对象
+    a.download = `${fileName}.csv`; // 使用传入的 fileName 作为下载文件名
+    a.click(); // 触发下载
+    URL.revokeObjectURL(url); // 释放URL对象
 }
 
-// JSON.stringify 的自定义替换函数
+// JSON.stringify 的自定义替换函数，用于处理CSV中字符串字段
 function replacer(key, value) {
     if (typeof value === 'string') {
-        return value.replace(/"/g, '""'); // 替换引号以便于 CSV
+        return value.replace(/"/g, '""'); // 替换引号以便于CSV格式
     }
     return value;
 }
+
 
 // 初始化数据列表
 //fetchData();
