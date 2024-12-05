@@ -17,7 +17,7 @@ public class Data { // 保留类名 Data，但手动实现所需方法
     private Integer DataID;
 
     @Column(name = "userid", nullable = false) // 显式映射字段，并设置不可为 null
-    private Integer UserID;
+    private Integer userID;
 
     @Column(length = 20)
     private String DataName;
@@ -35,7 +35,7 @@ public class Data { // 保留类名 Data，但手动实现所需方法
     public String toString() {
         return "Data{" +
                 "DataID=" + DataID +
-                ", UserID=" + UserID +
+                ", userID=" + userID +
                 ", DataName='" + DataName + '\'' +
                 ", DataContent='" + DataContent + '\'' +
                 ", CreatedAt=" + CreatedAt +

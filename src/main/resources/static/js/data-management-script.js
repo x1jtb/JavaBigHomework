@@ -1,4 +1,3 @@
-const apiUrl = 'http://localhost:8080/api/data'; // 替换为实际的后端API URL
 const fileDropArea = document.getElementById('fileDropArea');
 const fileMessage = document.getElementById('fileMessage');
 let selectedFile = null;

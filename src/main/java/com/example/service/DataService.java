@@ -28,17 +28,11 @@ public class DataService {
         return dataRepository.save(data);
     }
 
+    //获取所有用户的数据，用来测试删除数据的api是否考虑userid，验证安全性
+    //可先别删
     public List<Data> getAllData() {
         return dataRepository.findAll(); // 确保DataRepository有findAll方法
     }
 
-    public boolean deleteDataById(Long dataid) {
-        if (dataRepository.existsById(Math.toIntExact(dataid))) {
-            dataRepository.deleteById(Math.toIntExact(dataid));
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
 
