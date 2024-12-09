@@ -220,40 +220,42 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
     const dataContent = document.getElementById('content').value;
 
     // 检查是否有内容或文件，确保至少满足一个条件
-    if (!dataContent && !selectedFile) {
+    if (!dataContent && selectedFiles.length === 0) {
         alert("请提供文字内容或选择文件进行上传");
         return;
     }
 
-    let fileContent = null;
-    if (selectedFile) {
-        fileContent = await selectedFile.text();
+    const dataToSend = [];
+    for (let file of selectedFiles) {
+        const fileContent = await file.text();
+        dataToSend.push({
+            dataName,
+            dataContent: dataContent || fileContent,
+            fileContent: fileContent || null
+        });
     }
-
-    const dataToSend = {
-        dataName,
-        dataContent: dataContent || fileContent,
-        fileContent: fileContent || null
-    };
 
     // 发送 POST 请求上传数据
     const token = localStorage.getItem('token');//获取token
-    fetch('/api/data/upload', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dataToSend)
-    })
-    .then(response => response.json())
-    .then(() => {
-        fetchAllData();     // 重新获取数据
-        renderDataList();   // 刷新数据列表
-        document.getElementById('dataForm').reset(); // 重置表单
-        resetFileUpload();  // 重置文件上传区域
-    })
-    .catch(error => console.error('Error uploading data:', error));
+    for (let data of dataToSend) {
+        fetch('/api/data/upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(() => {
+                // 处理响应
+            })
+            .catch(error => console.error('Error uploading data:', error));
+    }
+    fetchAllData();     // 重新获取数据
+    renderDataList();   // 刷新数据列表
+    document.getElementById('dataForm').reset(); // 重置表单
+    resetFileUpload();  // 重置文件上传区域
 });
 
 // 删除指定数据
@@ -307,8 +309,7 @@ fileDropArea.addEventListener('dragleave', () => {
 fileDropArea.addEventListener('drop', (event) => {
     event.preventDefault();
     fileDropArea.classList.remove('dragover');
-
-    selectedFile = event.dataTransfer.files[0];
+    selectedFiles = [...event.dataTransfer.files];
     displaySelectedFile();
 });
 
@@ -316,10 +317,11 @@ fileDropArea.addEventListener('drop', (event) => {
 fileDropArea.addEventListener('click', () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
+    fileInput.multiple = true;
     fileInput.accept = ".txt,.json";
     fileInput.onchange = () => {
         if (fileInput.files.length > 0) {
-            selectedFile = fileInput.files[0];
+            selectedFiles = [...fileInput.files];
             displaySelectedFile();
         }
     };
@@ -328,7 +330,12 @@ fileDropArea.addEventListener('click', () => {
 
 // 显示已选文件和“×”号
 function displaySelectedFile() {
-    fileMessage.innerHTML = `已选择文件: ${selectedFile.name} <span class="file-remove" onclick="removeSelectedFile()">×</span>`;
+    let message = "已选择文件: ";
+    selectedFiles.forEach((file, index) => {
+        message += `${file.name} `;
+    });
+    message += `<span class="file-remove" onclick="removeSelectedFiles()">×</span>`;
+    fileMessage.innerHTML = message;
 }
 
 // 移除选择的文件
