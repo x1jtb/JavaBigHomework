@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 public class ConcurrencyTest {
 
     public static void main(String[] args) {
-        int numberOfThreads = 10000000;  // 模拟并发的线程数
+        int numberOfThreads = 1000;  // 模拟并发的线程数
         String apiUrl = "http://localhost:8080/api/auth/login"; // API接口URL
 
         ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);

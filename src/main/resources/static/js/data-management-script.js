@@ -1,6 +1,6 @@
 const fileDropArea = document.getElementById('fileDropArea');
 const fileMessage = document.getElementById('fileMessage');
-let selectedFile = null;
+let selectedFiles = []; // 初始化 selectedFiles 变量
 let selectedData = null; // 存储选中的数据项
 
 
@@ -226,12 +226,19 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
     }
 
     const dataToSend = [];
-    for (let file of selectedFiles) {
-        const fileContent = await file.text();
+    if (selectedFiles.length > 0) {
+        for (let file of selectedFiles) {
+            const fileContent = await file.text();
+            dataToSend.push({
+                dataName,
+                dataContent: dataContent || fileContent,
+                fileContent: fileContent || null
+            });
+        }
+    } else {
         dataToSend.push({
             dataName,
-            dataContent: dataContent || fileContent,
-            fileContent: fileContent || null
+            dataContent
         });
     }
 
@@ -334,7 +341,7 @@ function displaySelectedFile() {
     selectedFiles.forEach((file, index) => {
         message += `${file.name} `;
     });
-    message += `<span class="file-remove" onclick="removeSelectedFiles()">×</span>`;
+    message += `<span class="file-remove" onclick="removeSelectedFile()">×</span>`; // 修改为正确的函数名
     fileMessage.innerHTML = message;
 }
 

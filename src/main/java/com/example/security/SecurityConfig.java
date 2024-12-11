@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable() // 禁用 CSRF 保护
                 .authorizeRequests()
                 .antMatchers("/index.html").permitAll()  //放行/index.html，不需要认证
-                .antMatchers("/api/auth/authority/admin").hasAuthority("ADMIN") //进入该页面需要管理员身份
+                .antMatchers("/api/auth/authority/admin","/api/auth/admin/**").hasAuthority("ADMIN") //进入该页面需要管理员身份
                 .antMatchers("/api/auth/authority/user").hasAnyAuthority("ADMIN","USER") // 进入该页面需要登录
                 .antMatchers("/","/api/data/**","/register.html","/api/auth/register","/api/auth/login", "/css/**", "/js/**","/images/**").permitAll() // 允许所有人访问 loginlogin.html 和登录接口
                 .antMatchers("/admin.html","/data-management.html").permitAll()

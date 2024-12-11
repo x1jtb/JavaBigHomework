@@ -1,8 +1,10 @@
 package com.example.controller;
 
+import com.example.entity.Data;
 import com.example.entity.User;
 import com.example.repository.UserRepository;
 import com.example.security.CustomUserDetails;
+import com.example.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +19,12 @@ import com.example.service.UserDetailsServiceImpl;
 import com.example.model.AuthRequest;
 import com.example.model.AuthResponse;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -26,15 +34,17 @@ public class AuthController {
     private final UserDetailsServiceImpl userDetailsService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DataRepository dataRepository;
 
     // 使用构造函数注入依赖项  
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, UserRepository userRepository, PasswordEncoder passwordEncoder, DataRepository dataRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.dataRepository = dataRepository;
     }
 
     @PostMapping("/login")
@@ -107,4 +117,76 @@ public class AuthController {
         return ResponseEntity.ok("用户认证成功!");
     }
 
+    // 从数据库中获取所有用户
+    @GetMapping("/admin/getusers")
+    public ResponseEntity<?> getAllUsers() {
+
+        List<User> users = userRepository.findAll();
+
+        // 只返回用户名和 ID
+        List<Map<String, Object>> userList = users.stream()
+                .map(user -> {
+                    Map<String, Object> userMap = new HashMap<>();
+                    userMap.put("id", user.getId());
+                    userMap.put("username", user.getUsername());
+                    return userMap;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(userList);
+    }
+
+    //修改用户名
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<?> updateUsername(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        // 从数据库中查找用户
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(404).body("用户不存在");
+        }
+
+        User user = userOptional.get();
+
+        // 检查新用户名是否已经存在
+        String newUsername = request.get("username");
+        if (userRepository.findByUsername(newUsername).isPresent()) {
+            return ResponseEntity.status(400).body("用户名已存在，请选择其他用户名");
+        }
+
+        // 更新用户名
+        user.setUsername(newUsername);
+
+        // 保存更新后的用户到数据库
+        userRepository.save(user);
+
+        return ResponseEntity.ok("用户名已更新");
+    }
+
+    //删除用户
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        // 从数据库中查找用户
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(404).body("用户不存在");
+        }
+
+        User user = userOptional.get();
+
+        // 检查用户角色是否为 ADMIN
+        if ("ADMIN".equals(user.getRole())) {
+            return ResponseEntity.status(403).body("无法删除管理员用户");
+        }
+
+        // 删除用户关联的所有数据
+        List<Data> userData = dataRepository.findByUserID(user.getId().intValue());
+        dataRepository.deleteAll(userData);
+
+        // 删除用户
+        userRepository.delete(user);
+
+        return ResponseEntity.ok("用户及其关联数据已删除");
+    }
 }
