@@ -6,6 +6,7 @@ import com.example.repository.UserRepository;
 import com.example.security.CustomUserDetails;
 import com.example.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -188,5 +189,52 @@ public class AuthController {
         userRepository.delete(user);
 
         return ResponseEntity.ok("用户及其关联数据已删除");
+    }
+
+    @DeleteMapping("/admin/{id}/data")
+    public ResponseEntity<?> deleteUserData(@PathVariable Long id) {
+
+
+        // 从数据库中查找用户
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(404).body("用户不存在");
+        }
+
+        User user = userOptional.get();
+
+        // 检查用户角色是否为 ADMIN
+        if ("ADMIN".equals(user.getRole())) {
+            return ResponseEntity.status(403).body("无法删除管理员用户的数据");
+        }
+        // 查找指定用户的数据
+        List<Data> userData = dataRepository.findByUserID(id.intValue());
+
+        // 删除指定用户的数据
+        dataRepository.deleteAll(userData);
+
+        return ResponseEntity.ok("用户数据已删除");
+    }
+
+    @PostMapping("/admin/{userId}/reset-password")
+    public ResponseEntity<?> resetPassword(@PathVariable Long userId) {
+
+        // 查找指定用户
+        Optional<User> targetUserOptional = userRepository.findById(userId);
+        if (!targetUserOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("用户不存在");
+        }
+
+        User targetUser = targetUserOptional.get();
+
+        // 重置密码为加密后的 "123456"
+        String newPassword = passwordEncoder.encode("123456");
+        targetUser.setPassword(newPassword);
+
+        // 保存更新后的用户到数据库
+        userRepository.save(targetUser);
+
+        return ResponseEntity.ok("密码已重置为 123456");
     }
 }

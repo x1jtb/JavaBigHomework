@@ -60,40 +60,27 @@ async function login() {
         return;
     }
 
-    const data = await apiPostRequest('/api/auth/login', { username, password });
+    try {
+        const data = await apiPostRequest('/api/auth/login', { username, password });
 
-    if (data) {
-        const jwt = data.jwt;
-        const redirectUrl = data.redirectUrl;
+        if (data) {
+            const jwt = data.jwt;
+            const redirectUrl = data.redirectUrl;
 
-        localStorage.setItem('token', jwt);
-        window.location.href = redirectUrl;
+            localStorage.setItem('token', jwt);
+            window.location.href = redirectUrl;
+        }
+    } catch (error) {
+        showError('登录失败，请检查输入或网络连接');
     }
 }
 
-// 注册函数
-async function register() {
-    const username = document.getElementById('register-username').value;
-    const password = document.getElementById('register-password').value;
-
-    const data = await apiPostRequest('/api/auth/register', { username, password });
-
-    if (data) {
-        alert('注册成功，请登录');
-        toggleForm();
-    }
-}
-
-// 切换表单的显示
-function toggleForm() {
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-
-    if (loginForm.style.display === 'none') {
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-    } else {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
-    }
-}
+// 添加回车键事件监听器，实现回车登录
+document.addEventListener('DOMContentLoaded', () => {
+    // 监听整个文档的 keydown 事件
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            login();
+        }
+    });
+});

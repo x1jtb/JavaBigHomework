@@ -35,3 +35,13 @@ async function register() {
         showError('注册失败，请检查网络连接');
     }
 }
+
+// 添加回车键事件监听器，实现回车登录
+document.addEventListener('DOMContentLoaded', () => {
+    // 监听整个文档的 keydown 事件
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            register();
+        }
+    });
+});

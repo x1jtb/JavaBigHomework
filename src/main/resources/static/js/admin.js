@@ -219,16 +219,71 @@ async function deleteUser(id) {
 }
 
 // 删除用户数据
-function deleteUserData(id) {
-    const user = users.find(u => u.id === id);
-    alert(`删除用户数据：\nID: ${user.id}\n用户名: ${user.username} 的数据已删除`);
+async function deleteUserData(userId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    // 确认删除
+    const confirmDelete = confirm("确定要删除该用户的数据吗？");
+    if (!confirmDelete) {
+        return;
+    }
+
+    // 使用 DELETE 请求调用 API 以删除用户数据
+    const response = await fetch(`/api/auth/admin/${userId}/data`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        const errorMessage = await response.text();
+        alert(`删除用户数据失败：${errorMessage}`);
+        return;
+    }
+
+    // 更新前端的用户数据
+    renderUsers(users);
+    alert('用户数据已删除');
 }
 
 // 重置密码
-function resetPassword(id) {
-    const user = users.find(u => u.id === id);
-    alert(`重置用户 ${user.username} 的密码`);
-    // 这里可以添加实际的重置密码逻辑，例如调用API
+async function resetPassword(userId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    // 确认重置密码
+    const confirmReset = confirm("确定要重置该用户的密码为 123456 吗？");
+    if (!confirmReset) {
+        return;
+    }
+
+    // 使用 POST 请求调用 API 以重置密码
+    const response = await fetch(`/api/auth/admin/${userId}/reset-password`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        const errorMessage = await response.text();
+        alert(`重置密码失败：${errorMessage}`);
+        return;
+    }
+
+    alert('密码已重置为 123456');
 }
 
 // 初始渲染所有用户
