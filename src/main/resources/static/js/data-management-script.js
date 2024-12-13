@@ -1,7 +1,7 @@
 const fileDropArea = document.getElementById('fileDropArea');
 const fileMessage = document.getElementById('fileMessage');
 let selectedFiles = []; // 初始化 selectedFiles 变量
-let selectedData = null; // 存储选中的数据项
+let selectedData = []; // 存储选中的数据项
 
 
 // 页面加载时检查登录状态并获取所有数据
@@ -142,15 +142,11 @@ function renderDataList(data) {
             if (row.classList.contains('selected')) {
                 // 如果该行已经被选中，则取消选中状态
                 row.classList.remove('selected');
-                selectedData = null; // 清除选中的数据
+                selectedData = selectedData.filter(data => data.dataID !== item.dataID); // 从选中列表中移除
             } else {
                 // 如果该行没有被选中，则选中该行
-                const previousSelected = document.querySelector('.selected');
-                if (previousSelected) {
-                    previousSelected.classList.remove('selected'); // 移除上一个选中的行
-                }
                 row.classList.add('selected'); // 添加当前行的选中状态
-                selectedData = item; // 存储当前选中的数据项
+                selectedData.push(item); // 存储当前选中的数据项
             }
         });
 
@@ -158,6 +154,39 @@ function renderDataList(data) {
     });
 }
 
+// 全选按钮点击事件
+document.getElementById('selectAllButton').addEventListener('click', () => {
+    const rows = document.querySelectorAll('#dataTable tbody tr');
+    let allSelected = true; // 假设所有数据项都已被选中
+
+    // 检查是否所有数据项都已被选中
+    rows.forEach(row => {
+        if (!row.classList.contains('selected')) {
+            allSelected = false; // 如果有未选中的数据项，则设置为 false
+        }
+    });
+
+    if (allSelected) {
+        // 如果所有数据项都已被选中，则取消所有选中状态
+        rows.forEach(row => {
+            row.classList.remove('selected');
+        });
+        selectedData = []; // 清空选中的数据
+    } else {
+        // 如果未全部选中，则选中所有数据项
+        rows.forEach(row => {
+            if (!row.classList.contains('selected')) {
+                row.classList.add('selected');
+                const dataID = row.querySelector('button.delete').getAttribute('onclick').match(/'(\d+)'/)[1];
+                const dataName = row.cells[1].textContent;
+                const dataContent = row.cells[2].textContent;
+                const createdAt = row.cells[3].textContent;
+                const updatedAt = row.cells[4].textContent;
+                selectedData.push({ dataID, dataName, dataContent, createdAt, updatedAt });
+            }
+        });
+    }
+});
 
 //编辑按钮
 function editData(dataID, dataName, dataContent) {
@@ -243,8 +272,8 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
     }
 
     // 发送 POST 请求上传数据
-    const token = localStorage.getItem('token');//获取token
-    for (let data of dataToSend) {
+    const token = localStorage.getItem('token'); // 获取token
+    const uploadPromises = dataToSend.map(data =>
         fetch('/api/data/upload', {
             method: 'POST',
             headers: {
@@ -253,14 +282,11 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
             },
             body: JSON.stringify(data)
         })
-            .then(response => response.json())
-            .then(() => {
-                // 处理响应
-            })
-            .catch(error => console.error('Error uploading data:', error));
-    }
-    fetchAllData();     // 重新获取数据
-    renderDataList();   // 刷新数据列表
+    );
+
+    await Promise.all(uploadPromises); // 等待所有上传完成
+
+    await fetchAllData(); // 重新获取数据
     document.getElementById('dataForm').reset(); // 重置表单
     resetFileUpload();  // 重置文件上传区域
 });
@@ -363,36 +389,28 @@ document.getElementById('exportButton').addEventListener('click', () => {
     const format = document.getElementById('exportFormat').value;
 
     // 判断是否有选中的数据
-    if (selectedData) {
-        // 如果有选中的数据，则导出选中的数据
-        const dataToExport = {
-            dataName: selectedData.dataName,
-            dataContent: selectedData.dataContent,
-            fileContent: selectedData.fileContent,
-            createdAt: selectedData.createdAt,
-            updatedAt: selectedData.updatedAt
-        };
+    if (selectedData.length > 0) {
+        // 如果有选中的数据，则为每个选中的数据生成一个独立的文件
+        selectedData.forEach(data => {
+            const dataToExport = {
+                dataName: data.dataName,
+                dataContent: data.dataContent,
+                fileContent: data.fileContent,
+                createdAt: data.createdAt,
+                updatedAt: data.updatedAt
+            };
 
-        const fileName = selectedData.dataName || 'data'; // 使用选中数据的 dataName 作为文件名，如果没有则使用默认的 'data'
+            const fileName = data.dataName || 'data'; // 使用选中数据的 dataName 作为文件名，如果没有则使用默认的 'data'
 
-        if (format === 'json') {
-            exportToJson(dataToExport, fileName);
-        } else if (format === 'csv') {
-            exportToCsv(dataToExport, fileName);
-        }
+            if (format === 'json') {
+                exportToJson(dataToExport, fileName);
+            } else if (format === 'csv') {
+                exportToCsv(dataToExport, fileName);
+            }
+        });
     } else {
-        // 如果没有选中的数据，则导出所有数据
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                const fileName = 'all_data'; // 默认文件名
-                if (format === 'json') {
-                    exportToJson(data, fileName);
-                } else if (format === 'csv') {
-                    exportToCsv(data, fileName);
-                }
-            })
-            .catch(error => console.error('Error fetching data for export:', error));
+        // 如果没有选中的数据，则不执行导出操作
+        alert("请先选择要导出的数据");
     }
 });
 

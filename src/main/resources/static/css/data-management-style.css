@@ -143,3 +143,17 @@ li {
 .selected { /*渲染选中演示*/
     background-color: #e0f7fa; /* 高亮颜色 */
 }
+
+#selectAllButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+#selectAllButton:hover {
+    background-color: #0056b3;
+}

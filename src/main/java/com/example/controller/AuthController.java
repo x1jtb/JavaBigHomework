@@ -191,6 +191,7 @@ public class AuthController {
         return ResponseEntity.ok("用户及其关联数据已删除");
     }
 
+    //删除用户
     @DeleteMapping("/admin/{id}/data")
     public ResponseEntity<?> deleteUserData(@PathVariable Long id) {
 
@@ -217,6 +218,7 @@ public class AuthController {
         return ResponseEntity.ok("用户数据已删除");
     }
 
+    //重置用户密码
     @PostMapping("/admin/{userId}/reset-password")
     public ResponseEntity<?> resetPassword(@PathVariable Long userId) {
 
