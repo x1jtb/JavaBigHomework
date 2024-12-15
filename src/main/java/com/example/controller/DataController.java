@@ -157,6 +157,7 @@ public class DataController {
                 data.setDataName(dataRequest.getDataName());        // 更新数据标题
                 data.setDataContent(dataRequest.getDataContent());  // 更新数据内容
                 data.setUpdatedAt(LocalDateTime.now());             // 更新修改日期为当前系统时间
+                data.setFileContent(dataRequest.getFileContent());
 
                 dataRepository.save(data); // 保存修改后的数据
                 return ResponseEntity.ok("数据更新成功");

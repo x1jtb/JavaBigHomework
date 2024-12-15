@@ -7,59 +7,76 @@
     <link rel="stylesheet" href="css/data-management-style.css">
 </head>
 <body>
+<header>
     <h1>数据管理系统</h1>
-    <form id="dataForm">
-        <input type="text" id="name" placeholder="输入名称" required>
-        <textarea id="content" placeholder="输入内容" rows="4"></textarea>
-        <div id="fileDropArea">点击选择文件，或将文件拖拽到此处</div>
-        <div id="fileMessage"></div>
-        <button type="submit">上传数据</button>
-    </form>
+</header>
 
-    <h2>已上传数据</h2>
-    <input type="text" id="searchInput" placeholder="搜索数据名或内容" onkeyup="searchData()">
-    <table id="dataTable">
-        <thead>
-        <tr>
-            <th>编号</th>
-            <th>名称</th>
-            <th>创建日期</th>
-            <th>修改日期</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- 数据行将由 JavaScript 插入 -->
-        </tbody>
-    </table>
-    <ul id="dataList"></ul>
+<main>
+    <!-- 数据上传表单 -->
+    <section class="form-section">
+        <form id="dataForm">
+            <input type="text" id="name" placeholder="输入名称" required>
+            <textarea id="content" placeholder="输入内容" rows="4"></textarea>
+            <div id="fileDropArea">点击选择文件，或将文件拖拽到此处</div>
+            <div id="fileMessage"></div>
+            <button type="submit" class="btn btn-primary">上传数据</button>
+        </form>
+    </section>
 
-    <div id="exportSection">
+    <!-- 已上传数据列表 -->
+    <section class="data-section">
+        <h2>已上传数据</h2>
+        <input type="text" id="searchInput" placeholder="搜索数据名或内容" onkeyup="searchData()">
+        <table id="dataTable">
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>名称</th>
+                <th>创建日期</th>
+                <th>修改日期</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 数据行将由 JavaScript 插入 -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 导出数据 -->
+    <section class="export-section">
         <h2>导出数据</h2>
         <select id="exportFormat">
             <option value="json">导出为 JSON</option>
             <option value="csv">导出为 CSV</option>
         </select>
-        <button id="exportButton">导出数据</button>
-        <button id="selectAllButton">全选</button>
-    </div>
+        <button id="exportButton" class="btn btn-success">导出数据</button>
+        <button id="selectAllButton" class="btn btn-secondary">全选</button>
+    </section>
+</main>
 
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <h2>编辑数据</h2>
-            <form id="editForm">
-                <input type="hidden" id="editDataID">
-                <label for="editName">名称:</label>
-                <input type="text" id="editName" required>
-                <label for="editContent">内容:</label>
-                <textarea id="editContent" rows="4"></textarea>
-                <button type="submit">保存修改</button>
-                <button type="button" id="closeModal">取消</button>
-            </form>
-        </div>
+<!-- 编辑数据模态框 -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h2>编辑数据</h2>
+        <form id="editForm">
+            <input type="hidden" id="editDataID">
+            <label for="editName">名称:</label>
+            <input type="text" id="editName" required>
+            <label for="editContent">文本内容:</label>
+            <textarea id="editContent" rows="4"></textarea>
+            <label for="editFileContent">文件内容:</label>
+            <textarea id="editFileContent" rows="4" style="display: none;"></textarea>
+            <label for="editFile">选择文件:</label>
+            <input type="file" id="editFile" accept=".txt,.json" style="display: none;">
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-primary">保存修改</button>
+                <button type="button" id="closeModal" class="btn btn-secondary">取消</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <script src="js/data-management-script.js"></script>
+<script src="js/data-management-script.js"></script>
 </body>
 </html>
-

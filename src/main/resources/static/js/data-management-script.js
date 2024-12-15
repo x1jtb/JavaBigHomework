@@ -130,6 +130,16 @@ function searchData() {
     renderDataList(filteredData);
 }
 
+document.getElementById('dataTable').addEventListener('click', function(event) {
+    if (event.target.classList.contains('btn-primary')) {
+        const dataID = event.target.dataset.id;
+        const dataName = event.target.dataset.name;
+        const dataContent = event.target.dataset.content;
+        const fileContent = event.target.dataset.filecontent;
+        editData(dataID, dataName, dataContent, fileContent);
+    }
+});
+
 // 渲染数据列表
 function renderDataList(data) {
     const dataTableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
@@ -138,15 +148,19 @@ function renderDataList(data) {
     let counter = 1;
 
     data.forEach(item => {
+        // 格式化时间
+        const createdAt = item.createdAt.replace('T', ' ');
+        const updatedAt = item.updatedAt.replace('T', ' ');
+
         const row = dataTableBody.insertRow();
         row.innerHTML = `
             <td>${counter}</td>
             <td>${item.dataName}</td>
-            <td>${item.createdAt}</td>
-            <td>${item.updatedAt}</td>
+            <td>${createdAt}</td>
+            <td>${updatedAt}</td>
             <td>
-                <button onclick="editData('${item.dataID}', '${item.dataName}', '${item.dataContent}')">编辑</button>
-                <button class="delete" onclick="deleteData('${item.dataID}')">删除</button>
+                <button data-id="${item.dataID}" data-name="${item.dataName}" data-content="${item.dataContent}" data-filecontent="${item.fileContent}" class="btn btn-primary">编辑</button>
+                <button class="delete  btn btn-danger" onclick="deleteData('${item.dataID}')">删除</button>
             </td>
         `;
 
@@ -198,11 +212,24 @@ document.getElementById('selectAllButton').addEventListener('click', () => {
     }
 });
 
-//编辑按钮
-function editData(dataID, dataName, dataContent) {
+// 编辑按钮
+function editData(dataID, dataName, dataContent, fileContent) {
     document.getElementById('editDataID').value = dataID;
     document.getElementById('editName').value = dataName;
     document.getElementById('editContent').value = dataContent;
+    document.getElementById('editFileContent').value = fileContent || '';
+
+    const editFileInput = document.getElementById('editFile');
+    const editFileContentTextarea = document.getElementById('editFileContent');
+
+    if (fileContent) {
+        editFileContentTextarea.style.display = 'block';
+        editFileInput.style.display = 'none';
+    } else {
+        editFileContentTextarea.style.display = 'none';
+        editFileInput.style.display = 'block';
+    }
+
     document.getElementById('editModal').classList.add('open');
 }
 
@@ -218,7 +245,14 @@ document.getElementById('editForm').addEventListener('submit', async (event) => 
     const dataID = document.getElementById('editDataID').value;
     const dataName = document.getElementById('editName').value;
     const dataContent = document.getElementById('editContent').value;
+    const editFileInput = document.getElementById('editFile');
+    let fileContent = null;
 
+    if (editFileInput.files && editFileInput.files.length > 0) {
+        fileContent = await editFileInput.files[0].text();
+    } else {
+        fileContent = document.getElementById('editFileContent').value;
+    }
 
     const token = localStorage.getItem('token');
     if (!token) {
@@ -234,13 +268,13 @@ document.getElementById('editForm').addEventListener('submit', async (event) => 
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ dataName, dataContent})
+            body: JSON.stringify({ dataName, dataContent, fileContent })
         });
 
         if (response.ok) {
             alert("修改成功");
             document.getElementById('editModal').classList.remove('open');
-            fetchAllData(); // 重新加载数据
+            await fetchAllData(); // 重新加载数据
         } else {
             alert("修改失败");
         }
@@ -271,13 +305,15 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
             dataToSend.push({
                 dataName,
                 dataContent: dataContent || fileContent,
-                fileContent: fileContent || null
+                fileContent: fileContent || null,
+                isFile: true
             });
         }
     } else {
         dataToSend.push({
             dataName,
-            dataContent
+            dataContent,
+            isFile: false
         });
     }
 

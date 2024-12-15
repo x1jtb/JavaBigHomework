@@ -1,47 +1,75 @@
+/* 全局样式 */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #f9f9f9;
+    padding: 0;
+    background-color: #f5f7fa;
+    color: #333;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-image: url('../images/page_bg.png'); /* 背景图路径 */
+    background-size: cover; /* 背景图覆盖整个页面 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 背景图不重复 */
+}
+
+header {
+    width: 100%;
+    max-width: 1200px;
+    text-align: center;
+    margin: 20px 0;
+    padding: 0 20px;
+    background-color: rgba(255, 255, 255, 0.9); /* 添加半透明背景 */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 h1, h2 {
-    color: #333;
+    color: #2c3e50;
     margin: 10px 0;
 }
 
-#dataForm {
-    background-color: #fff;
+main {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+}
+
+/* 表单样式 */
+.form-section {
+    background-color: rgba(255, 255, 255, 0.9); /* 半透明背景 */
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px;
     margin-bottom: 20px;
 }
 
 input[type="text"],
 textarea {
-    width: calc(100% - 20px);
+    width: 100%;
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-sizing: border-box;
+    font-size: 14px;
 }
 
 #fileDropArea {
     border: 2px dashed #007bff;
     padding: 20px;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     color: #555;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 #fileDropArea.dragover {
@@ -49,90 +77,88 @@ textarea {
     background-color: #e7f1ff;
 }
 
-.file-remove {
-    color: red;
-    cursor: pointer;
-    margin-left: 5px;
-    font-weight: bold;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-li {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.actions button {
-    margin-left: 5px;
-}
-
-#exportSection {
-    text-align: center;
-    margin-top: 20px;
-    width: 100%;
-    max-width: 600px;
-}
-
-#exportButton {
+/* 按钮样式 */
+.btn {
     padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, transform 0.2s;
+    margin: 5px;
 }
 
-#exportButton:hover {
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-primary:hover {
     background-color: #0056b3;
+    transform: scale(1.05);
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    transform: scale(1.05);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #dc3545;
+    transform: scale(1.05);
+}
+
+/* 数据列表样式 */
+.data-section {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9); /* 半透明背景 */
     padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
-.modal-content {
-    text-align: center;
-}
-
-.modal button {
-    margin: 10px;
-}
-
-.modal.open {
-    display: block;
+#searchInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
 }
 
 #dataTable {
     width: 100%;
-    max-width: 600px;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin-top: 10px;
 }
 
 #dataTable th, #dataTable td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 10px;
     text-align: center;
+    font-size: 14px;
 }
 
 #dataTable th {
@@ -140,38 +166,78 @@ li {
     color: #333;
 }
 
-.selected { /*渲染选中演示*/
-    background-color: #e0f7fa; /* 高亮颜色 */
+.selected {
+    background-color: #e0f7fa;
 }
 
-#searchInput {
-    width: calc(100% - 20px);
+/* 导出数据样式 */
+.export-section {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9); /* 半透明背景 */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#exportFormat {
     padding: 10px;
-    margin-bottom: 10px;
+    margin-right: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-sizing: border-box;
+    font-size: 14px;
 }
 
 #selectAllButton {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 20px;
+    margin-top: 10px;
 }
 
-#selectAllButton:hover {
-    background-color: #0056b3;
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.95); /* 半透明背景 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
 }
 
-#searchInput {
-    width: calc(100% - 20px);
+.modal-content {
+    text-align: center;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal-content input,
+.modal-content textarea {
+    width: 100%;
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-sizing: border-box;
+    font-size: 14px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-buttons button {
+    margin-left: 10px;
+}
+
+.modal.open {
+    display: block;
 }
