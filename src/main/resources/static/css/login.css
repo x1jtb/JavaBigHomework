@@ -19,22 +19,22 @@ body {
 }
 
 .form-section {
-    width: 400px; /* 登录表单区域宽度 */
+    width: 450px; /* 登录表单区域宽度 */
     padding: 20px;
     background-color: white; /* 表单背景颜色 */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
 }
 
 .logo-left {
-    width: 100px; /* 学校标志的宽度 */
-    margin-bottom: 20px; /* 学校标志与下方内容的间距 */
+    width: 150px; /* 学校标志的宽度 */
+    margin-bottom: 40px; /* 学校标志与下方内容的间距 */
 }
 
 /* title.png 的样式 */
 .title-image {
     width: 100%; /* 设置宽度 */
-    max-width: 300px; /* 最大宽度 */
-    margin-bottom: 20px; /* 与下方内容保持间距 */
+    max-width: 400px; /* 最大宽度 */
+    margin-bottom: 30px; /* 与下方内容保持间距 */
     display: block; /* 使其独占一行 */
 }
 
