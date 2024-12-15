@@ -86,6 +86,8 @@ async function fetchData(dataID) {
     }
 }
 
+let allData = []; // 存储所有数据
+
 // 获取所有数据并渲染
 async function fetchAllData() {
     const token = localStorage.getItem('token'); // 确保用户已登录
@@ -105,7 +107,7 @@ async function fetchAllData() {
         });
 
         if (response.ok) {
-            const allData = await response.json(); // 获取所有数据
+            allData = await response.json(); // 获取所有数据
             renderDataList(allData); // 渲染数据列表
         } else {
             alert("获取数据失败");
@@ -116,17 +118,29 @@ async function fetchAllData() {
     }
 }
 
+// 搜索数据
+function searchData() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const filteredData = allData.filter(data => {
+        return (
+            data.dataName.toLowerCase().includes(searchInput) ||
+            (data.dataContent ? data.dataContent.toLowerCase().includes(searchInput) : false)
+        );
+    });
+    renderDataList(filteredData);
+}
+
 // 渲染数据列表
 function renderDataList(data) {
     const dataTableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-    dataTableBody.innerHTML = ''; // 清空当前表格
+    dataTableBody.innerHTML = '';
 
-    let counter = 1; // 计数器，从1开始
+    let counter = 1;
 
     data.forEach(item => {
         const row = dataTableBody.insertRow();
         row.innerHTML = `
-            <td>${counter}</td> <!-- 显示计数器值作为编号 -->
+            <td>${counter}</td>
             <td>${item.dataName}</td>
             <td>${item.createdAt}</td>
             <td>${item.updatedAt}</td>
@@ -136,21 +150,17 @@ function renderDataList(data) {
             </td>
         `;
 
-        // 添加点击事件用于选中数据
         row.addEventListener('click', () => {
-            // 检查当前点击的行是否已经被选中
             if (row.classList.contains('selected')) {
-                // 如果该行已经被选中，则取消选中状态
                 row.classList.remove('selected');
-                selectedData = selectedData.filter(data => data.dataID !== item.dataID); // 从选中列表中移除
+                selectedData = selectedData.filter(d => d.dataID !== item.dataID);
             } else {
-                // 如果该行没有被选中，则选中该行
-                row.classList.add('selected'); // 添加当前行的选中状态
-                selectedData.push(item); // 存储当前选中的数据项
+                row.classList.add('selected');
+                selectedData.push(item);
             }
         });
 
-        counter++; // 每渲染一条数据，计数器加1
+        counter++;
     });
 }
 

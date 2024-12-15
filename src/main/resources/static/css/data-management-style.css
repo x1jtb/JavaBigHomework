@@ -144,6 +144,15 @@ li {
     background-color: #e0f7fa; /* 高亮颜色 */
 }
 
+#searchInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
 #selectAllButton {
     padding: 10px 20px;
     background-color: #007bff;
@@ -156,4 +165,13 @@ li {
 
 #selectAllButton:hover {
     background-color: #0056b3;
+}
+
+#searchInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
