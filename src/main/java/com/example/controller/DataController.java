@@ -267,4 +267,63 @@ public class DataController {
         }
     }*/
 
+    // 获取用户上传的所有数据
+    @GetMapping("/admin/{userId}/data")
+    public ResponseEntity<?> getUserData(@PathVariable Long userId) {
+        // 从数据库中查找用户
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(404).body("用户不存在");
+        }
+
+        User user = userOptional.get();
+
+        // 获取用户上传的所有数据
+        List<Data> userData = dataRepository.findByUserID(user.getId().intValue());
+
+        return ResponseEntity.ok(userData);
+    }
+
+    // 编辑用户数据
+    @PutMapping("/admin/{dataID}")
+    public ResponseEntity<?> updateUserData(@PathVariable Long dataID, @RequestBody DataRequest dataRequest) {
+        // 从数据库中查找数据
+        Optional<Data> dataOptional = dataRepository.findById(dataID.intValue());
+
+        if (!dataOptional.isPresent()) {
+            return ResponseEntity.status(404).body("数据不存在");
+        }
+
+        Data data = dataOptional.get();
+
+        // 更新数据内容
+        data.setDataName(dataRequest.getDataName());
+        data.setDataContent(dataRequest.getDataContent());
+        data.setUpdatedAt(LocalDateTime.now());
+
+        // 保存更新后的数据到数据库
+        dataRepository.save(data);
+
+        return ResponseEntity.ok("数据已更新");
+    }
+
+    // 删除用户数据
+    @DeleteMapping("/admin/{dataID}")
+    public ResponseEntity<?> deleteUserData(@PathVariable Long dataID) {
+        // 从数据库中查找数据
+        Optional<Data> dataOptional = dataRepository.findById(dataID.intValue());
+
+        if (!dataOptional.isPresent()) {
+            return ResponseEntity.status(404).body("数据不存在");
+        }
+
+        Data data = dataOptional.get();
+
+        // 删除数据
+        dataRepository.delete(data);
+
+        return ResponseEntity.ok("数据已删除");
+    }
+
 }

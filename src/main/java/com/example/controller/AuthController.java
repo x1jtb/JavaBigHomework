@@ -164,6 +164,31 @@ public class AuthController {
         return ResponseEntity.ok("用户名已更新");
     }
 
+    // 获取用户详细信息
+    @GetMapping("/admin/{userId}/details")
+    public ResponseEntity<?> getUserDetails(@PathVariable Long userId) {
+        // 从数据库中查找用户
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(404).body("用户不存在");
+        }
+
+        User user = userOptional.get();
+
+        // 获取用户上传的所有数据
+        List<Data> userData = dataRepository.findByUserID(user.getId().intValue());
+
+        // 构建用户详细信息对象
+        Map<String, Object> userDetails = new HashMap<>();
+        userDetails.put("id", user.getId());
+        userDetails.put("username", user.getUsername());
+        userDetails.put("password", user.getPassword());
+        userDetails.put("data", userData);
+
+        return ResponseEntity.ok(userDetails);
+    }
+
     //删除用户
     @DeleteMapping("/admin/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {

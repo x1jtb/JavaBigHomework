@@ -10,6 +10,7 @@ window.onload = async () => {
     users = await fetchAllUsers(); // 将用户数据赋值给全局变量
     renderUsers(users);
 };
+
 // 检查用户是否已登录
 async function checkLogin() {
     const token = localStorage.getItem('token');
@@ -71,7 +72,7 @@ function renderUsers(usersList) {
     userTableBody.innerHTML = ''; // 清空现有内容
 
     if (usersList.length === 0) {
-        userTableBody.innerHTML = '<tr><td colspan="7" class="text-center">没有找到相关用户</td></tr>';
+        userTableBody.innerHTML = '<tr><td colspan="8" class="text-center">没有找到相关用户</td></tr>';
         return;
     }
 
@@ -86,6 +87,7 @@ function renderUsers(usersList) {
             <td><button class="btn btn-danger" onclick="deleteUser(${user.id})">删除用户</button></td>
             <td><button class="btn btn-secondary" onclick="deleteUserData(${user.id})">删除用户数据</button></td>
             <td><button class="btn btn-info" onclick="resetPassword(${user.id})">重置密码</button></td>
+            <td><button class="btn btn-success" onclick="viewUserDetails(${user.id})">查看详细信息</button></td>
         `;
 
         userTableBody.appendChild(tr);
@@ -284,6 +286,137 @@ async function resetPassword(userId) {
     }
 
     alert('密码已重置为 123456');
+}
+
+// 查看用户详细信息
+async function viewUserDetails(userId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    // 使用 GET 请求调用 API 以获取用户详细信息
+    const response = await fetch(`/api/auth/admin/${userId}/details`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        const errorMessage = await response.text();
+        alert(`获取用户详细信息失败：${errorMessage}`);
+        return;
+    }
+
+    const userDetails = await response.json();
+
+    // 显示用户详细信息
+    const userDataDetailsSection = document.getElementById('user-data-details');
+    userDataDetailsSection.style.display = 'block';
+
+    // 渲染用户数据
+    renderUserData(userDetails.data);
+}
+
+// 渲染用户数据
+function renderUserData(dataList) {
+    const userDataTableBody = document.getElementById('user-data-table-body');
+    userDataTableBody.innerHTML = ''; // 清空现有内容
+
+    if (dataList.length === 0) {
+        userDataTableBody.innerHTML = '<tr><td colspan="5" class="text-center">没有找到相关数据</td></tr>';
+        return;
+    }
+
+    dataList.forEach(data => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+            <td>${data.dataID}</td>
+            <td>${data.dataName}</td>
+            <td>${data.createdAt}</td>
+            <td>${data.updatedAt}</td>
+            <td>
+                <button class="btn btn-warning" onclick="editData(${data.dataID})">编辑</button>
+                <button class="btn btn-danger" onclick="deleteData(${data.dataID})">删除</button>
+            </td>
+        `;
+
+        userDataTableBody.appendChild(tr);
+    });
+}
+
+// 编辑数据
+async function editData(dataID) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    const newDataName = prompt('修改数据名称：');
+    const newDataContent = prompt('修改数据内容：');
+
+    if (newDataName || newDataContent) {
+        const response = await fetch(`/api/data/${dataID}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ dataName: newDataName, dataContent: newDataContent })
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            alert(`修改数据失败：${errorMessage}`);
+            return;
+        }
+
+        alert('数据已修改');
+        // 重新加载用户数据
+        const userId = users.find(user => user.data.some(data => data.dataID === dataID)).id;
+        viewUserDetails(userId);
+    }
+}
+
+// 删除数据
+async function deleteData(dataID) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("请先登录");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    const confirmDelete = confirm("确定要删除该数据吗？");
+    if (!confirmDelete) {
+        return;
+    }
+
+    const response = await fetch(`/api/data/${dataID}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        const errorMessage = await response.text();
+        alert(`删除数据失败：${errorMessage}`);
+        return;
+    }
+
+    alert('数据已删除');
+    // 重新加载用户数据
+    const userId = users.find(user => user.data.some(data => data.dataID === dataID)).id;
+    viewUserDetails(userId);
 }
 
 // 初始渲染所有用户

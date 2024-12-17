@@ -18,7 +18,7 @@
             <label for="search-query" class="form-label">输入用户名或用户ID</label>
             <input type="text" class="form-control" id="search-query" placeholder="请输入用户名或用户ID">
         </div>
-        <button class="btn btn-primary">搜索</button>
+        <button class="btn btn-primary" onclick="searchUser()">搜索</button>
     </div>
 
     <!-- 用户数据处理区域 -->
@@ -34,9 +34,29 @@
                 <th>删除用户</th>
                 <th>删除用户数据</th>
                 <th>重置密码</th>
+                <th>查看详细信息</th>
             </tr>
             </thead>
             <tbody id="user-table-body">
+            <!-- 用户数据行会动态生成 -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 用户数据详细信息区域 -->
+    <div id="user-data-details" class="user-data-section p-3 border" style="display: none;">
+        <h3>用户数据详细信息</h3>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>数据ID</th>
+                <th>数据名称</th>
+                <th>创建时间</th>
+                <th>更新时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="user-data-table-body">
             <!-- 用户数据行会动态生成 -->
             </tbody>
         </table>
