@@ -33,7 +33,7 @@ async function checkLogin() {
         window.location.href = "/index.html";
 
         // 处理权限认证成功的逻辑
-        const data = await response.json();
+        const data = await response.text();
         console.log('权限认证通过', data);
     }
 }
@@ -331,8 +331,8 @@ document.getElementById('dataForm').addEventListener('submit', async event => {
     );
 
     await Promise.all(uploadPromises); // 等待所有上传完成
-
     await fetchAllData(); // 重新获取数据
+
     document.getElementById('dataForm').reset(); // 重置表单
     resetFileUpload();  // 重置文件上传区域
 });

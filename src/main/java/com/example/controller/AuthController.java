@@ -107,15 +107,15 @@ public class AuthController {
     @PostMapping("/authority/admin")
     public ResponseEntity<?> authority(@RequestBody AuthRequest authRequest) {
         // 返回权限认证成功的响应
-        System.out.println("成功接受到admin请求!"); //在服务器输出权限认证成功信息
-        return ResponseEntity.ok("管理员认证成功!");
+        //System.out.println("成功接受到admin请求!"); //在服务器输出权限认证成功信息
+        return ResponseEntity.status(200).body("Administrator authentication successful!");
     }
 
     @PostMapping("/authority/user")
     public ResponseEntity<?> user(@RequestBody AuthRequest authRequest) {
         // 返回权限认证成功的响应
-        System.out.println("成功接受到user请求!"); //在服务器输出权限认证成功信息
-        return ResponseEntity.ok("用户认证成功!");
+        //System.out.println("成功接受到user请求!"); //在服务器输出权限认证成功信息
+        return ResponseEntity.status(200).body("User authentication successful!");
     }
 
     // 从数据库中获取所有用户
@@ -264,4 +264,6 @@ public class AuthController {
 
         return ResponseEntity.ok("密码已重置为 123456");
     }
+
+
 }

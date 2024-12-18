@@ -35,7 +35,7 @@ async function checkLogin() {
     }
 
     // 处理权限认证成功的逻辑
-    const data = await response.json();
+    const data = await response.text();
     console.log('权限认证通过', data);
 }
 
@@ -269,6 +269,7 @@ async function resetPassword(userId) {
     if (!confirmReset) {
         return;
     }
+
 
     // 使用 POST 请求调用 API 以重置密码
     const response = await fetch(`/api/auth/admin/${userId}/reset-password`, {
