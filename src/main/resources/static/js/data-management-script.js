@@ -26,7 +26,7 @@ async function checkLogin() {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({}) // 如果需要传递额外的参数，可以在此处添加到对象中
+        body: JSON.stringify({})
     });
     if (!response.ok) {
         alert("权限认证失败，请重新登录");

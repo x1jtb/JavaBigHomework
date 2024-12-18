@@ -16,7 +16,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10小时有效
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1小时有效
                 .signWith(SignatureAlgorithm.HS256,secret)
                 .compact();
     }

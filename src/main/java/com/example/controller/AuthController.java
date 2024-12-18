@@ -6,6 +6,8 @@ import com.example.repository.UserRepository;
 import com.example.security.CustomUserDetails;
 import com.example.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -118,14 +120,13 @@ public class AuthController {
         return ResponseEntity.status(200).body("用户认证成功!");
     }
 
-    // 从数据库中获取所有用户
+    // 从数据库中获取所有用户，使用分页查询
     @GetMapping("/admin/getusers")
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<?> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Page<User> userPage = userRepository.findAll(PageRequest.of(page, size));
+        List<Map<String, Object>> userList = userPage.getContent().stream()
 
-        List<User> users = userRepository.findAll();
-
-        // 只返回用户名和 ID
-        List<Map<String, Object>> userList = users.stream()
+                //  只返回用户名和ID
                 .map(user -> {
                     Map<String, Object> userMap = new HashMap<>();
                     userMap.put("id", user.getId());
@@ -133,7 +134,6 @@ public class AuthController {
                     return userMap;
                 })
                 .collect(Collectors.toList());
-
         return ResponseEntity.ok(userList);
     }
 
@@ -167,6 +167,7 @@ public class AuthController {
     // 获取用户详细信息
     @GetMapping("/admin/{userId}/details")
     public ResponseEntity<?> getUserDetails(@PathVariable Long userId) {
+
         // 从数据库中查找用户
         Optional<User> userOptional = userRepository.findById(userId);
 
