@@ -60,7 +60,7 @@ public class AuthController {
             System.out.println("User " + authRequest.getUsername() + " authenticated successfully.");
         } catch (BadCredentialsException e) {
             System.err.println("Authentication failed for user: " + authRequest.getUsername() + " - Incorrect username or password.");
-            return ResponseEntity.status(401).body("Incorrect username or password");
+            return ResponseEntity.status(401).body("用户名或密码错误");
         }
 
         // 加载用户信息  
@@ -88,7 +88,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
         // 检查用户名是否已存在
         if (userRepository.findByUsername(authRequest.getUsername()).isPresent()) {
-            return ResponseEntity.status(400).body("Username already exists");
+            return ResponseEntity.status(400).body("用户名已存在");
         }
 
         // 创建新用户并设置密码加密
@@ -101,21 +101,21 @@ public class AuthController {
         userRepository.save(newUser);
 
         // 返回成功注册的响应
-        return ResponseEntity.status(201).body("User registered successfully");
+        return ResponseEntity.status(201).body("用户注册成功");
     }
 
     @PostMapping("/authority/admin")
     public ResponseEntity<?> authority(@RequestBody AuthRequest authRequest) {
         // 返回权限认证成功的响应
         //System.out.println("成功接受到admin请求!"); //在服务器输出权限认证成功信息
-        return ResponseEntity.status(200).body("Administrator authentication successful!");
+        return ResponseEntity.status(200).body("管理员认证成功！");
     }
 
     @PostMapping("/authority/user")
     public ResponseEntity<?> user(@RequestBody AuthRequest authRequest) {
         // 返回权限认证成功的响应
         //System.out.println("成功接受到user请求!"); //在服务器输出权限认证成功信息
-        return ResponseEntity.status(200).body("User authentication successful!");
+        return ResponseEntity.status(200).body("用户认证成功!");
     }
 
     // 从数据库中获取所有用户
